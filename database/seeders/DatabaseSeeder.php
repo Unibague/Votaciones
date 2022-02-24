@@ -14,13 +14,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        Role::create([
-            'name' => 'user',
-            'customId' => 1
-        ]);
-        Role::create([
-            'name' => 'admin',
-            'customId' => 3
-        ]);
+
+        $this->call([RoleSeeder::class, VoterSeeder::class,]);
     }
 }
