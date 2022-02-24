@@ -1,8 +1,8 @@
 <?php
 
+use App\Models\Voter;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use Laravel\Socialite\Facades\Socialite;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +18,16 @@ use Laravel\Socialite\Facades\Socialite;
 Route::get('/', function () {
     return Inertia::render('Bienvenido');
 })->name('default');
+
+
+Route::get('/csv', function () {
+    Voter::create([
+        'name' => 'hola',
+        'identification_number' => 'dsds',
+        'faculty_code' => 20,
+        'program_code' => 24,
+    ]);
+});
 
 /* >>>>>Roles routes <<<<<< */
 
