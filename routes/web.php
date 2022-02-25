@@ -19,15 +19,30 @@ Route::get('/', function () {
     return Inertia::render('Bienvenido');
 })->name('default');
 
+/* >>>>>Faculties routes <<<<<< */
 
-Route::get('/csv', function () {
-    Voter::create([
-        'name' => 'hola',
-        'identification_number' => 'dsds',
-        'faculty_code' => 20,
-        'program_code' => 24,
-    ]);
-});
+//Faculties api
+Route::apiResource('api/faculties', \App\Http\Controllers\FacultyController::class, [
+    'as' => 'api'
+])->middleware('auth');
+
+//Get all faculties (view)
+Route::get('/faculties', [\App\Http\Controllers\FacultyController::class, 'indexView'])->middleware(['auth', 'isAdmin'])->name('faculties.index');
+
+/* >>>>>Faculties routes <<<<<< */
+
+/* >>>>>Program routes <<<<<< */
+
+//Faculties api
+Route::apiResource('api/programs', \App\Http\Controllers\ProgramController::class, [
+    'as' => 'api'
+])->middleware('auth');
+
+//Get all faculties (view)
+Route::get('/programs', [\App\Http\Controllers\ProgramController::class, 'indexView'])->middleware(['auth', 'isAdmin'])->name('programs.index');
+
+/* >>>>>Program routes <<<<<< */
+
 
 /* >>>>>Roles routes <<<<<< */
 

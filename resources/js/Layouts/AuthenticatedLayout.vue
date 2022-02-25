@@ -14,6 +14,34 @@
                   :href="route(menuItem.routeName)">
                 {{ menuItem.name }}
             </Link>
+
+            <v-menu
+                v-for="dropdown in dropdowns" :key="dropdown.title"
+                v-if="$page.props.user.customRoleId >= dropdown.role"
+                bottom
+                origin="center center"
+            >
+                <template v-slot:activator="{ on, attrs }">
+                    <v-btn text
+                           v-bind="attrs"
+                           v-on="on"
+                           class="d-none d-md-block normal-button mr-3">
+                        {{ dropdown.name }}
+                    </v-btn>
+                </template>
+
+                <v-list>
+                    <Link as="v-list-item"
+                          :href="route(item.routeName)"
+                          v-for="item in dropdown.items"
+                          :key="item.name"
+                    >
+                        <v-list-item-title>{{ item.name }}</v-list-item-title>
+                    </Link>
+                </v-list>
+            </v-menu>
+
+
             <v-menu left bottom>
                 <template v-slot:activator="{ on, attrs }">
                     <v-avatar
@@ -62,6 +90,35 @@
                             </v-list-item-icon>
                             <v-list-item-title>{{ item.name }}</v-list-item-title>
                         </Link>
+
+                        <v-list-group
+                            v-for="dropdown in dropdowns"
+                            :key="dropdown.title"
+                            v-model="dropdown.active"
+                            :prepend-icon="dropdown.icon"
+                            no-action
+                        >
+                            <!-- activator -->
+                            <template v-slot:activator>
+                                <v-list-item-content>
+                                    <v-list-item-title v-text="dropdown.name"></v-list-item-title>
+                                </v-list-item-content>
+                            </template>
+
+                            <Link as="v-list-item"
+                                  v-for="dropdownItem in dropdown.items"
+                                  :key="dropdownItem.name"
+                                  :href="route(dropdownItem.routeName)"
+                            >
+                                <v-list-item-content>
+                                    <v-list-item-title v-text="dropdownItem.name"></v-list-item-title>
+                                </v-list-item-content>
+                            </Link>
+
+
+                        </v-list-group>
+
+
                     </v-list-item-group>
                 </v-list>
 
@@ -98,33 +155,42 @@ export default {
     data: () => ({
         drawer: false,
         menu:
-            [
-                {
-                    name: 'Gestionar roles',
-                    routeName: 'roles.index',
-                    role: 3,
-                    icon: 'mdi-cog-box'
-                },
-                {
-                    name: 'Gestionar usuarios',
-                    routeName: 'users.index',
-                    role: 3,
-                    icon: 'mdi-account-cog'
-                },
-                {
-                    name: 'Gestionar Dependencias',
-                    routeName: 'test',
-                    role: 1,
-                    icon: 'mdi-school'
-                },
-                {
-                    name: 'Gestionar Calendarios',
-                    routeName: 'test',
-                    role: 1,
-                    icon: 'mdi-calendar'
-                },
+            [],
+        dropdowns: [
 
-            ],
+            {
+                name: 'Gestionar',
+                role: 3,
+                active: false,
+                icon: 'mdi-cog-box',
+                items: [
+                    {
+                        name: 'Gestionar roles',
+                        routeName: 'roles.index',
+                        role: 3,
+                        icon: 'mdi-cog-box'
+                    },
+                    {
+                        name: 'Gestionar usuarios',
+                        routeName: 'users.index',
+                        role: 3,
+                        icon: 'mdi-account-cog'
+                    },
+                    {
+                        name: 'Facultades',
+                        routeName: 'faculties.index',
+                        role: 3,
+                        icon: 'mdi-cog-box'
+                    },
+                    {
+                        name: 'Programas',
+                        routeName: 'programs.index',
+                        role: 1,
+                        icon: 'mdi-calendar'
+                    },]
+
+            },
+        ],
         group: null,
         initials: '',
     }),

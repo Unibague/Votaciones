@@ -30,9 +30,6 @@ class ApiRoleController extends Controller
 
     public function update(UpdateRoleRequest $request, Role $role)
     {
-        if ($role === null) {
-            return response()->json(['error' => 'El rol seleccionado no existe', 404]);
-        }
         $role->customId = $request->input('customId');
         $role->name = $request->input('name');
         $role->save();

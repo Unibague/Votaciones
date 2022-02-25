@@ -10,5 +10,17 @@ const prepareErrorText = (e) => {
     }
     return `${e.response.data.message} ${errorsAsText}`;
 }
-
-export {prepareErrorText}
+const checkIfModelHasEmptyProperties = (model) => {
+    for (const modelKey in model) {
+        if (model[modelKey] === '') {
+            return true;
+        }
+    }
+    return false;
+}
+const clearModelProperties = (model, setNull = false) => {
+    for (const modelKey in model) {
+        model[modelKey] = setNull === true ? null : '';
+    }
+}
+export {prepareErrorText, checkIfModelHasEmptyProperties, clearModelProperties}

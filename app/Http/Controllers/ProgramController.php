@@ -2,85 +2,72 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DeleteProgramRequest;
 use App\Models\Program;
 use App\Http\Requests\StoreProgramRequest;
 use App\Http\Requests\UpdateProgramRequest;
+use Illuminate\Http\JsonResponse;
+use Inertia\Inertia;
 
 class ProgramController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Show index vue view
      *
-     * @return \Illuminate\Http\Response
+     */
+    public function indexView(): \Inertia\Response
+    {
+        return Inertia::render('Programs/Index');
+    }
+
+    //From this point, all the routes are used as API
+
+    /**
+     * Get all faculties for API
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $faculties = Program::all(['id', 'name', 'code']);
+        return response($faculties);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreProgramRequest  $request
-     * @return \Illuminate\Http\Response
+     * @param StoreProgramRequest $request
+     * @return JsonResponse
      */
     public function store(StoreProgramRequest $request)
     {
-        //
-    }
+        Program::create($request->all());
+        return response()->json(['message' => 'Facultad creada exitosamente']);
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Program  $program
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Program $program)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Program  $program
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Program $program)
-    {
-        //
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateProgramRequest  $request
-     * @param  \App\Models\Program  $program
-     * @return \Illuminate\Http\Response
+     * @param UpdateProgramRequest $request
+     * @param Program $program
+     * @return JsonResponse
      */
-    public function update(UpdateProgramRequest $request, Program $program)
+    public function update(UpdateProgramRequest $request, Program $program): JsonResponse
     {
-        //
+        $program->name = $request->input('name');
+        $program->save();
+        return response()->json(['message' => 'Facultad actualizada exitosamente', 200]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Program  $program
-     * @return \Illuminate\Http\Response
+     * @param DeleteProgramRequest $request
+     * @param Program $program
+     * @return JsonResponse
      */
-    public function destroy(Program $program)
+    public function destroy(DeleteProgramRequest $request, Program $program)
     {
-        //
+        $program->delete();
+        return response()->json(['message' => 'Facultad eliminada exitosamente']);
     }
 }

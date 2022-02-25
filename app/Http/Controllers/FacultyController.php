@@ -2,85 +2,72 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DeleteFacultyRequest;
 use App\Models\Faculty;
 use App\Http\Requests\StoreFacultyRequest;
 use App\Http\Requests\UpdateFacultyRequest;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
+use Inertia\Inertia;
 
 class FacultyController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Show index vue view
      *
-     * @return \Illuminate\Http\Response
+     */
+    public function indexView(): \Inertia\Response
+    {
+        return Inertia::render('Faculties/Index');
+    }
+
+    //From this point, all the routes are used as API
+
+    /**
+     * Get all faculties for API
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $faculties = Faculty::all(['id', 'name', 'code']);
+        return response($faculties);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreFacultyRequest  $request
-     * @return \Illuminate\Http\Response
+     * @param \App\Http\Requests\StoreFacultyRequest $request
+     * @return Response
      */
     public function store(StoreFacultyRequest $request)
     {
-        //
-    }
+        Faculty::create($request->all());
+        return response()->json(['message' => 'Facultad creada exitosamente']);
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Faculty  $faculty
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Faculty $faculty)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Faculty  $faculty
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Faculty $faculty)
-    {
-        //
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateFacultyRequest  $request
-     * @param  \App\Models\Faculty  $faculty
-     * @return \Illuminate\Http\Response
+     * @param UpdateFacultyRequest $request
+     * @param Faculty $faculty
+     * @return JsonResponse
      */
     public function update(UpdateFacultyRequest $request, Faculty $faculty)
     {
-        //
+        $faculty->name = $request->input('name');
+        $faculty->save();
+        return response()->json(['message' => 'Facultad actualizada exitosamente', 200]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Faculty  $faculty
-     * @return \Illuminate\Http\Response
+     * @param Faculty $faculty
+     * @return JsonResponse
      */
-    public function destroy(Faculty $faculty)
+    public function destroy(DeleteFacultyRequest $request, Faculty $faculty)
     {
-        //
+        $faculty->delete();
+        return response()->json(['message' => 'Facultad eliminada exitosamente']);
     }
 }
