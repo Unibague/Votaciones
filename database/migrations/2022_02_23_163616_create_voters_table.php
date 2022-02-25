@@ -17,8 +17,13 @@ class CreateVotersTable extends Migration
             $table->id();
             $table->text('name');
             $table->string('identification_number');
-            $table->smallInteger('faculty_code')->nullable()->references('code')->on('faculties')->nullOnDelete();
-            $table->smallInteger('program_code')->nullable()->references('code')->on('programs')->nullOnDelete();
+
+            $table->smallInteger('faculty_code')->nullable();
+            $table->foreign('faculty_code')->references('code')->on('faculties');
+
+            $table->smallInteger('program_code')->nullable();
+            $table->foreign('program_code')->references('code')->on('programs');
+
             $table->timestamps();
         });
     }
