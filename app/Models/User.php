@@ -64,6 +64,17 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
+    public function votes()
+    {
+        return $this->hasMany(Vote::class);
+    }
+
+    public function table()
+    {
+        return $this->belongsTo(Table::class);
+    }
+
+
     public function hasRole(string $roleName): bool
     {
         try {

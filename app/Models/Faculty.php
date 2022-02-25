@@ -9,4 +9,9 @@ class Faculty extends Model
 {
     protected $guarded = [];
     use HasFactory;
+
+    public function voters()
+    {
+        return $this->hasMany(Voter::class,'faculty_code','code');
+    }
 }

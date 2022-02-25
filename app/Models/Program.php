@@ -9,4 +9,7 @@ class Program extends Model
 {
     protected $guarded = [];
     use HasFactory;
+    public function voters(){
+        return $this->hasMany(Voter::class,'program_code','code');
+    }
 }
