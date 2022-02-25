@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Role extends Model
 {
+    use HasFactory;
     protected $guarded = [];
 
     public static function getRoleNumber(string $roleName): int
@@ -18,5 +19,9 @@ class Role extends Model
         return $selectedRole->customId;
     }
 
-    use HasFactory;
+
+
+    public function users () {
+        return $this->hasMany(User::class,'role_id','id');
+    }
 }

@@ -8,4 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class VotingOption extends Model
 {
     use HasFactory;
+
+    public function candidates()
+    {
+        return $this->hasMany(Candidate::class);
+    }
+
+    public function votes()
+    {
+        return $this->hasMany(Votes::class);
+    }
 }
