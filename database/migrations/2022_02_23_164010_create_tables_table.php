@@ -16,7 +16,8 @@ class CreateTablesTable extends Migration
         Schema::create('tables', function (Blueprint $table) {
             $table->id();
             $table->text('name');
-            $table->smallInteger('faculty_code')->nullable()->references('code')->on('faculties')->nullOnDelete();
+            $table->smallInteger('faculty_code')->nullable();
+            $table->foreign('faculty_code')->references('code')->on('faculties')->nullOnDelete();
             $table->timestamps();
         });
     }

@@ -40,15 +40,27 @@ Route::get('/faculties', [\App\Http\Controllers\FacultyController::class, 'index
 
 /* >>>>>Program routes <<<<<< */
 
-//Faculties api
+//programs api
 Route::apiResource('api/programs', \App\Http\Controllers\ProgramController::class, [
     'as' => 'api'
 ])->middleware('auth');
 
-//Get all faculties (view)
+//Get all programs (view)
 Route::get('/programs', [\App\Http\Controllers\ProgramController::class, 'indexView'])->middleware(['auth', 'isAdmin'])->name('programs.index');
 
 /* >>>>>Program routes <<<<<< */
+
+/* >>>>>Table routes <<<<<< */
+
+//programs api
+Route::apiResource('api/tables', \App\Http\Controllers\TableController::class, [
+    'as' => 'api'
+])->middleware('auth');
+
+//Get all programs (view)
+Route::get('/tables', [\App\Http\Controllers\TableController::class, 'indexView'])->middleware(['auth', 'isAdmin'])->name('tables.index');
+
+/* >>>>>Table routes <<<<<< */
 
 
 /* >>>>>Roles routes <<<<<< */

@@ -185,9 +185,19 @@ export default {
                     {
                         name: 'Programas',
                         routeName: 'programs.index',
-                        role: 1,
+                        role: 3,
                         icon: 'mdi-calendar'
-                    },]
+                    },
+
+                    {
+                        name: 'Mesas de votación',
+                        routeName: 'tables.index',
+                        role: 3,
+                        icon: 'mdi-calendar'
+                    },
+
+
+                ]
 
             },
         ],
