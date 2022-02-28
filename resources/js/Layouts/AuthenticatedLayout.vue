@@ -177,6 +177,12 @@ export default {
                         icon: 'mdi-account-cog'
                     },
                     {
+                        name: 'Jurados',
+                        routeName: 'jurors.index',
+                        role: 3,
+                        icon: 'mdi-account-cog'
+                    },
+                    {
                         name: 'Facultades',
                         routeName: 'faculties.index',
                         role: 3,

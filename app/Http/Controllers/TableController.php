@@ -7,9 +7,11 @@ use App\Http\Requests\StoreTableRequest;
 use App\Http\Requests\UpdateTableRequest;
 use App\Models\Table;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
+/**
+ *
+ */
 class TableController extends Controller
 {
     /**
@@ -44,6 +46,11 @@ class TableController extends Controller
     }
 
 
+    /**
+     * @param UpdateTableRequest $request
+     * @param Table $table
+     * @return JsonResponse
+     */
     public function update(UpdateTableRequest $request, Table $table): JsonResponse
     {
         $table->name = $request->input('name');
@@ -53,7 +60,12 @@ class TableController extends Controller
     }
 
 
-    public function destroy(DeleteTableRequest $request, Table $table)
+    /**
+     * @param DeleteTableRequest $request
+     * @param Table $table
+     * @return JsonResponse
+     */
+    public function destroy(DeleteTableRequest $request, Table $table): JsonResponse
     {
         $table->delete();
         return response()->json(['message' => 'Mesa eliminada exitosamente']);

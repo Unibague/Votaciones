@@ -84,6 +84,20 @@ Route::resource('api/users', \App\Http\Controllers\Users\ApiUserController::clas
 Route::patch('/api/users/{user}/roles', [\App\Http\Controllers\Users\ApiUserController::class, 'updateUserRole'])->middleware('auth')->name('api.users.roles.update');
 Route::get('/api/users/{user}/roles', [\App\Http\Controllers\Users\ApiUserController::class, 'getUserRole'])->middleware('auth')->name('api.users.roles.show');
 
+/* >>>>>User routes <<<<<< */
+
+/* >>>>>Jurors routes <<<<<< */
+
+//Faculties api
+Route::apiResource('api/jurors', \App\Http\Controllers\JuryController::class, [
+    'as' => 'api'
+])->middleware('auth');
+
+//Get all faculties (view)
+Route::get('/jurors', [\App\Http\Controllers\JuryController::class, 'indexView'])->middleware(['auth', 'isAdmin'])->name('jurors.index');
+
+/* >>>>>Jurors routes <<<<<< */
+
 
 //Auth routes
 Route::get('login', [\App\Http\Controllers\AuthController::class, 'redirectGoogleLogin'])->name('login');
