@@ -165,13 +165,13 @@ export default {
                 icon: 'mdi-cog-box',
                 items: [
                     {
-                        name: 'Gestionar roles',
+                        name: 'Roles',
                         routeName: 'roles.index',
                         role: 3,
                         icon: 'mdi-cog-box'
                     },
                     {
-                        name: 'Gestionar usuarios',
+                        name: 'Usuarios',
                         routeName: 'users.index',
                         role: 3,
                         icon: 'mdi-account-cog'

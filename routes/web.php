@@ -19,6 +19,13 @@ Route::get('/', function () {
     return Inertia::render('Bienvenido');
 })->name('default');
 
+Route::get('/redirect', function () {
+    if (auth()->user()->hasRole('admin')) {
+        return redirect()->route('programs.index');
+    }
+
+})->middleware('auth')->name('handleRoleRedirect');
+
 /* >>>>>Faculties routes <<<<<< */
 
 //Faculties api
@@ -64,15 +71,6 @@ Route::resource('api/users', \App\Http\Controllers\Users\ApiUserController::clas
 //Update user role
 Route::patch('/api/users/{user}/roles', [\App\Http\Controllers\Users\ApiUserController::class, 'updateUserRole'])->middleware('auth')->name('api.users.roles.update');
 Route::get('/api/users/{user}/roles', [\App\Http\Controllers\Users\ApiUserController::class, 'getUserRole'])->middleware('auth')->name('api.users.roles.show');
-
-/* >>>>>Roles routes <<<<<< */
-Route::get('test', function () {
-    return Inertia::render('SuperTest');
-})->name('test');
-
-Route::get('test2', function () {
-    return Inertia::render('SuperTest');
-})->name('test2');
 
 
 //Auth routes
