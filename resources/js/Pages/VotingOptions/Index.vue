@@ -19,9 +19,9 @@
                     <v-btn
                         color="primario"
                         class="grey--text text--lighten-4"
-                        @click="createFacultyDialog = true"
+                        @click="createVotingOptionDialog = true"
                     >
-                        Crear nueva facultad
+                        Crear nueva opción de votación
                     </v-btn>
                 </div>
 
@@ -32,20 +32,20 @@
                 loading-text="Cargando, por favor espere..."
                 :loading="isLoading"
                 :headers="headers"
-                :items="faculties"
+                :items="votingOptions"
                 :items-per-page="5"
                 class="elevation-1"
             >
                 <template v-slot:item.actions="{ item }">
                     <v-icon
                         class="mr-2 primario--text"
-                        @click="openEditRoleModal(item)"
+                        @click="openEditVotingOptionModal(item)"
                     >
                         mdi-pencil
                     </v-icon>
                     <v-icon
                         class="primario--text"
-                        @click="confirmDeleteRole(item)"
+                        @click="confirmDeleteVotingOption(item)"
                     >
                         mdi-delete
                     </v-icon>
@@ -55,33 +55,44 @@
 
             <!------------Seccion de dialogos ---------->
 
-            <!--Crear facultad -->
+            <!--Crear opción de votación -->
             <v-dialog
-                v-model="createFacultyDialog"
+                v-model="createVotingOptionDialog"
                 persistent
                 max-width="600px"
             >
-
                 <v-card>
                     <v-card-title>
-                        <span class="text-h5">Crear nueva facultad</span>
+                        <span class="text-h5">Crear nueva opción de votación</span>
                     </v-card-title>
                     <v-card-text>
                         <v-container>
                             <v-row>
                                 <v-col cols="12">
                                     <v-text-field
-                                        label="Nombre de la facultad *"
+                                        label="Nombre de la opción de votación *"
                                         required
-                                        v-model="newFaculty.name"
+                                        v-model="newVotingOption.name"
                                     ></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-text-field
-                                        label="Código de la facultad *"
+                                    <v-select
+                                        @change="getVotingOptionValues"
+                                        :items="VotingOptionsKeys"
+                                        label="Quiénes pueden participar en esta opción de votación *"
                                         required
-                                        v-model="newFaculty.code"
-                                    ></v-text-field>
+                                        v-model="newVotingOption.key"
+                                    ></v-select>
+                                </v-col>
+                                <v-col cols="12">
+                                    <v-select
+                                        :items="programsOrFaculties"
+                                        label="seleccione el valor deseado *"
+                                        required
+                                        v-model="newVotingOption.value"
+                                        :item-value="(votingOption)=>votingOption.id"
+                                        :item-text="(votingOption)=>votingOption.name"
+                                    ></v-select>
                                 </v-col>
 
                             </v-row>
@@ -93,28 +104,28 @@
                         <v-btn
                             color="primario"
                             text
-                            @click="createFacultyDialog = false"
+                            @click="createVotingOptionDialog = false"
                         >
                             Cancelar
                         </v-btn>
                         <v-btn
                             color="primario"
                             text
-                            @click="createFaculty"
+                            @click="createVotingOption"
                         >
                             Guardar cambios
                         </v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
-            <!--Confirmar borrar facultad-->
+            <!--Confirmar borrar opción de votación-->
             <confirm-dialog
-                :show="deleteFacultyDialog"
-                @canceled-dialog="deleteFacultyDialog = false"
-                @confirmed-dialog="deleteFaculty(deletedRoleId)"
+                :show="deleteVotingOptionDialog"
+                @canceled-dialog="deleteVotingOptionDialog = false"
+                @confirmed-dialog="deleteVotingOption(deletedVotingOptionId)"
             >
                 <template v-slot:title>
-                    Estas a punto de eliminar la facultad seleccionada
+                    Estas a punto de eliminar la opción de votación seleccionada
                 </template>
 
                 ¡Cuidado! esta acción es irreversible
@@ -124,25 +135,44 @@
                 </template>
             </confirm-dialog>
 
-            <!--Editar facultad-->
+            <!--Editar opción de votación-->
             <v-dialog
-                v-model="editFacultyDialog"
+                v-model="editVotingOptionDialog"
                 persistent
                 max-width="600px"
             >
                 <v-card>
                     <v-card-title>
-                        <span class="text-h5">Editar facultad</span>
+                        <span class="text-h5">Editar opción de votación</span>
                     </v-card-title>
                     <v-card-text>
                         <v-container>
                             <v-row>
                                 <v-col cols="12">
                                     <v-text-field
-                                        label="Nombre de la facultad*"
+                                        label="Nombre de la opción de votación*"
                                         required
-                                        v-model="editedFaculty.name"
+                                        v-model="editedVotingOption.name"
                                     ></v-text-field>
+                                </v-col>
+                                <v-col cols="12">
+                                    <v-select
+                                        @change="getVotingOptionValues"
+                                        :items="VotingOptionsKeys"
+                                        label="Quiénes pueden participar en esta opción de votación *"
+                                        required
+                                        v-model="editedVotingOption.key"
+                                    ></v-select>
+                                </v-col>
+                                <v-col cols="12">
+                                    <v-select
+                                        :items="programsOrFaculties"
+                                        label="seleccione el valor deseado *"
+                                        required
+                                        v-model="editedVotingOption.value"
+                                        :item-value="(votingOption)=>votingOption.id"
+                                        :item-text="(votingOption)=>votingOption.name"
+                                    ></v-select>
                                 </v-col>
 
                             </v-row>
@@ -154,14 +184,14 @@
                         <v-btn
                             color="primario"
                             text
-                            @click="editFacultyDialog = false"
+                            @click="editVotingOptionDialog = false"
                         >
                             Cancelar
                         </v-btn>
                         <v-btn
                             color="primario"
                             text
-                            @click="editFaculty"
+                            @click="editVotingOption"
                         >
                             Guardar cambios
                         </v-btn>
@@ -180,6 +210,7 @@ import {InertiaLink} from "@inertiajs/inertia-vue";
 import {prepareErrorText, checkIfModelHasEmptyProperties, clearModelProperties} from "@/HelperFunctions"
 import ConfirmDialog from "@/Components/ConfirmDialog";
 
+
 export default {
     components: {
         ConfirmDialog,
@@ -190,22 +221,35 @@ export default {
         return {
             //Table info
             headers: [
-                {text: 'Nombre de la facultad', value: 'name'},
-                {text: 'Código interno de la facultad', value: 'code'},
+                {text: 'Nombre de la opción de votación', value: 'name'},
+                {text: 'Nivel de votación', value: 'key'},
+                {text: 'Código de la opción de votación', value: 'value'},
                 {text: 'Acciones', value: 'actions', sortable: false},
             ],
-            faculties: [],
+            votingOptions: [],
+            newVotingOption: {
+                name: '',
+                key: '',
+                value: '',
+            },
+            //all faculties and programs to show on the select
+
+            programsOrFaculties: [],
 
             //Models
-            newFaculty: {
-                name: '',
-                code: '',
-            },
-            editedFaculty: {
+            editedVotingOption: {
                 id: '',
                 name: '',
+                key: '',
+                value: '',
             },
-            deletedFacultyId: 0,
+            deletedVotingOptionId: 0,
+
+            VotingOptionsKeys: [
+                {text: 'Todos', value: 'all'},
+                {text: 'Facultad', value: 'faculty'},
+                {text: 'Programa', value: 'program'},
+            ],
 
             //Snackbars
             snackbar: {
@@ -214,64 +258,82 @@ export default {
                 timeout: 3000
             },
             //Dialogs
-            createFacultyDialog: false,
-            deleteFacultyDialog: false,
-            editFacultyDialog: false,
+            createVotingOptionDialog: false,
+            deleteVotingOptionDialog: false,
+            editVotingOptionDialog: false,
 
             //Overlays
             isLoading: true,
         }
     },
     async created() {
-        await this.getAllFaculties();
+        await this.getAllVotingOptions();
         this.isLoading = false;
     },
     methods: {
-        openEditRoleModal: function (role) {
-            this.editedFaculty = {...role};
-            this.editFacultyDialog = true;
+
+        getVotingOptionValues: async function () {
+            let getData = this.newVotingOption.key===''?this.editedVotingOption.key:this.newVotingOption.key;
+            console.log(getData);
+            if (getData == 'faculty') {
+                let request = await axios.get(route('api.faculties.index'));
+                this.programsOrFaculties = request.data;
+            } else if (getData == 'program') {
+                let request = await axios.get(route('api.programs.index'));
+                this.programsOrFaculties = request.data;
+            } else {
+                this.programsOrFaculties = [0];
+            }
         },
-        editFaculty: async function () {
+
+        openEditVotingOptionModal: function (votingOption) {
+            this.editedVotingOption = {...votingOption};
+            this.editVotingOptionDialog = true;
+        },
+        editVotingOption: async function () {
             //Verify request
-            if (checkIfModelHasEmptyProperties(this.editedFaculty)) {
+            if (checkIfModelHasEmptyProperties(this.editedVotingOption)) {
                 this.snackbar.text = 'Por favor, llena todos los campos del formulario';
                 this.snackbar.status = true;
                 return;
             }
+
             //Recollect information
             let data = {
-                id: this.editedFaculty.id,
-                name: this.editedFaculty.name,
+                id: this.editedVotingOption.id,
+                name: this.editedVotingOption.name,
+                key: this.editedVotingOption.key,
+                value:this.editedVotingOption.value,
             }
 
             try {
-                let request = await axios.patch(route('api.faculties.update', {'faculty': this.editedFaculty.id}), data);
-                this.editFacultyDialog = false;
+                let request = await axios.patch(route('api.votingOptions.update', {'votingOption': this.editedVotingOption.id}), data);
+                this.editVotingOptionDialog = false;
                 this.snackbar.text = request.data.message;
                 this.snackbar.status = true;
-                this.getAllFaculties();
+                this.getAllVotingOptions();
 
-                //Clear role information
-                clearModelProperties(this.editedFaculty);
-                console.log(this.editedFaculty);
+                //Clear votingOption information
+                clearModelProperties(this.editedVotingOption);
+                console.log(this.editedVotingOption);
             } catch (e) {
                 this.snackbar.text = prepareErrorText(e);
                 this.snackbar.status = true;
             }
         },
 
-        confirmDeleteRole: function (role) {
-            this.deletedRoleId = role.id;
-            this.deleteFacultyDialog = true;
+        confirmDeleteVotingOption: function (votingOption) {
+            this.deletedVotingOptionId = votingOption.id;
+            this.deleteVotingOptionDialog = true;
         },
 
-        deleteFaculty: async function (facultyId) {
+        deleteVotingOption: async function (votingOptionId) {
             try {
-                let request = await axios.delete(route('api.faculties.destroy', {faculty: facultyId}));
-                this.deleteFacultyDialog = false;
+                let request = await axios.delete(route('api.votingOptions.destroy', {votingOption: votingOptionId}));
+                this.deleteVotingOptionDialog = false;
                 this.snackbar.text = request.data.message;
                 this.snackbar.status = true;
-                this.getAllFaculties();
+                this.getAllVotingOptions();
 
             } catch (e) {
                 this.snackbar.text = e.response.data.message;
@@ -279,46 +341,37 @@ export default {
             }
 
         },
-        getAllFaculties: async function () {
-            let request = await axios.get(route('api.faculties.index'));
-            this.faculties = request.data;
+        getAllVotingOptions: async function () {
+            let request = await axios.get(route('api.votingOptions.index'));
+            this.votingOptions = request.data;
         },
-        createFaculty: async function () {
-            if (checkIfModelHasEmptyProperties(this.newFaculty)) {
+        createVotingOption: async function () {
+            if (checkIfModelHasEmptyProperties(this.newVotingOption)) {
                 this.snackbar.text = 'Por favor, llena todos los campos del formulario';
                 this.snackbar.status = true;
                 return;
             }
 
             let data = {
-                name: this.newFaculty.name,
-                code: this.newFaculty.code
+                name: this.newVotingOption.name,
+                key: this.newVotingOption.key,
+                value: this.newVotingOption.value,
             }
-            //Clear role information
-            clearModelProperties(this.newFaculty);
+            //Clear votingOption information
+            clearModelProperties(this.newVotingOption);
 
             try {
-                let request = await axios.post(route('api.faculties.store'), data);
-                this.createFacultyDialog = false;
+                let request = await axios.post(route('api.votingOptions.store'), data);
+                this.createVotingOptionDialog = false;
                 this.snackbar.text = request.data.message;
                 this.snackbar.status = true;
-                this.getAllFaculties();
+                this.getAllVotingOptions();
             } catch (e) {
                 this.snackbar.text = e.response.data.message;
                 this.snackbar.status = true;
             }
 
         },
-        checkIfModelHasEmptyProperties: function (model) {
-            for (const modelKey in model) {
-                if (model[modelKey] === '') {
-                    return true;
-                }
-            }
-            return false;
-        }
     },
-
-
 }
 </script>

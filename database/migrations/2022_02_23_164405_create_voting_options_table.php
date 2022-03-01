@@ -16,8 +16,8 @@ class CreateVotingOptionsTable extends Migration
         Schema::create('voting_options', function (Blueprint $table) {
             $table->id();
             $table->text('name');
-            $table->enum('key',['all'.'faculty','program']);
-            $table->string('value');
+            $table->enum('key',['all','faculty','program']);
+            $table->smallInteger('value');
             $table->timestamps();
         });
     }
