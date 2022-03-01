@@ -50,6 +50,22 @@ Route::get('/programs', [\App\Http\Controllers\ProgramController::class, 'indexV
 
 /* >>>>>Program routes <<<<<< */
 
+
+/* >>>>>Voting options <<<<<< */
+
+//programs api
+Route::apiResource('api/votingOptions', \App\Http\Controllers\VotingOptionController::class, [
+    'as' => 'api'
+])->middleware('auth');
+
+//Get all programs (view)
+Route::get('/votingOptions', [\App\Http\Controllers\VotingOptionController::class, 'indexView'])->middleware(['auth', 'isAdmin'])->name('votingOptions.index');
+
+/* >>>>>Voting options <<<<<< */
+
+
+
+
 /* >>>>>Table routes <<<<<< */
 
 //programs api

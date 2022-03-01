@@ -5,82 +5,67 @@ namespace App\Http\Controllers;
 use App\Models\VotingOption;
 use App\Http\Requests\StoreVotingOptionRequest;
 use App\Http\Requests\UpdateVotingOptionRequest;
+use Inertia\Inertia;
 
 class VotingOptionController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Show index vue view
      *
-     * @return \Illuminate\Http\Response
+     */
+    public function indexView(): \Inertia\Response
+    {
+        return Inertia::render('VotingOptions/Index');
+    }
+
+    //From this point, all the routes are used as API
+
+    /**
+     * Get all faculties for API
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $faculties = Program::all(['id', 'name', 'code']);
+        return response($faculties);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreVotingOptionRequest  $request
-     * @return \Illuminate\Http\Response
+     * @param StoreProgramRequest $request
+     * @return JsonResponse
      */
-    public function store(StoreVotingOptionRequest $request)
+    public function store(StoreProgramRequest $request)
     {
-        //
-    }
+        Program::create($request->all());
+        return response()->json(['message' => 'Facultad creada exitosamente']);
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\VotingOption  $votingOption
-     * @return \Illuminate\Http\Response
-     */
-    public function show(VotingOption $votingOption)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\VotingOption  $votingOption
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(VotingOption $votingOption)
-    {
-        //
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateVotingOptionRequest  $request
-     * @param  \App\Models\VotingOption  $votingOption
-     * @return \Illuminate\Http\Response
+     * @param UpdateProgramRequest $request
+     * @param Program $program
+     * @return JsonResponse
      */
-    public function update(UpdateVotingOptionRequest $request, VotingOption $votingOption)
+    public function update(UpdateProgramRequest $request, Program $program): JsonResponse
     {
-        //
+        $program->name = $request->input('name');
+        $program->save();
+        return response()->json(['message' => 'Facultad actualizada exitosamente', 200]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\VotingOption  $votingOption
-     * @return \Illuminate\Http\Response
+     * @param DeleteProgramRequest $request
+     * @param Program $program
+     * @return JsonResponse
      */
-    public function destroy(VotingOption $votingOption)
+    public function destroy(DeleteProgramRequest $request, Program $program)
     {
-        //
+        $program->delete();
+        return response()->json(['message' => 'Facultad eliminada exitosamente']);
     }
 }

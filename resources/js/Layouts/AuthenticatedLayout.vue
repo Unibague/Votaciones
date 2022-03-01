@@ -157,9 +157,37 @@ export default {
         menu:
             [],
         dropdowns: [
-
             {
-                name: 'Gestionar',
+                name: 'Gestionar elecciones',
+                role: 3,
+                active: false,
+                icon: 'mdi-cog-box',
+                items: [
+                    {
+                        name: 'Jurados',
+                        routeName: 'jurors.index',
+                        role: 3,
+                        icon: 'mdi-account-cog'
+                    },
+                    {
+                        name: 'Mesas de votación',
+                        routeName: 'tables.index',
+                        role: 3,
+                        icon: 'mdi-calendar'
+                    },
+
+                    {
+                        name: 'Opciones de votación',
+                        routeName: 'votingOptions.index',
+                        role: 3,
+                        icon: 'mdi-calendar'
+                    },
+
+                ]
+
+            },
+            {
+                name: 'Gestionar sistema',
                 role: 3,
                 active: false,
                 icon: 'mdi-cog-box',
@@ -176,12 +204,7 @@ export default {
                         role: 3,
                         icon: 'mdi-account-cog'
                     },
-                    {
-                        name: 'Jurados',
-                        routeName: 'jurors.index',
-                        role: 3,
-                        icon: 'mdi-account-cog'
-                    },
+
                     {
                         name: 'Facultades',
                         routeName: 'faculties.index',
@@ -195,12 +218,6 @@ export default {
                         icon: 'mdi-calendar'
                     },
 
-                    {
-                        name: 'Mesas de votación',
-                        routeName: 'tables.index',
-                        role: 3,
-                        icon: 'mdi-calendar'
-                    },
 
 
                 ]
