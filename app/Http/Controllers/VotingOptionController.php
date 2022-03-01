@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DeleteVotingOptionRequest;
 use App\Models\VotingOption;
 use App\Http\Requests\StoreVotingOptionRequest;
 use App\Http\Requests\UpdateVotingOptionRequest;
@@ -21,51 +22,47 @@ class VotingOptionController extends Controller
     //From this point, all the routes are used as API
 
     /**
-     * Get all faculties for API
+     * Get all votingOptions for API
      */
     public function index()
     {
-        $faculties = Program::all(['id', 'name', 'code']);
-        return response($faculties);
+        $votingOptions = VotingOption::all(['id', 'name', 'key','value']);
+        return response($votingOptions);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param StoreProgramRequest $request
+     * @param StoreVotingOptionRequest $request
      * @return JsonResponse
      */
-    public function store(StoreProgramRequest $request)
+    public function store(StoreVotingOptionRequest $request)
     {
-        Program::create($request->all());
-        return response()->json(['message' => 'Facultad creada exitosamente']);
+        VotingOption::create($request->all());
+        return response()->json(['message' => 'Opción de votación creada exitosamente']);
 
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param UpdateProgramRequest $request
-     * @param Program $program
-     * @return JsonResponse
-     */
-    public function update(UpdateProgramRequest $request, Program $program): JsonResponse
+
+    public function update(UpdateVotingOptionRequest $request, VotingOption $votingOption): \Illuminate\Http\JsonResponse
     {
-        $program->name = $request->input('name');
-        $program->save();
-        return response()->json(['message' => 'Facultad actualizada exitosamente', 200]);
+        $votingOption->name = $request->input('name');
+        $votingOption->key = $request->input('key');
+        $votingOption->value = $request->input('value');
+        $votingOption->save();
+        return response()->json(['message' => 'Opción de votación actualizada exitosamente', 200]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param DeleteProgramRequest $request
-     * @param Program $program
+     * @param DeleteVotingOptionRequest $request
+     * @param VotingOption $votingOption
      * @return JsonResponse
      */
-    public function destroy(DeleteProgramRequest $request, Program $program)
+    public function destroy(DeleteVotingOptionRequest $request, VotingOption $votingOption)
     {
-        $program->delete();
-        return response()->json(['message' => 'Facultad eliminada exitosamente']);
+        $votingOption->delete();
+        return response()->json(['message' => 'Opción de votación eliminada exitosamente']);
     }
 }
