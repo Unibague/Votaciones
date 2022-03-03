@@ -312,7 +312,7 @@ export default {
             snackbar: {
                 text: '...',
                 status: false,
-                timeout: 3000
+                timeout: 2000
             },
             //Dialogs
             createCandidateDialog: false,

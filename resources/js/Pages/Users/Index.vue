@@ -130,7 +130,7 @@ export default {
             snackbar: {
                 text: '...',
                 status: false,
-                timeout: 3000
+                timeout: 1500
             },
             //Dialogs
             editUserDialog: false,
