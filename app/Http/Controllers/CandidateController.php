@@ -2,85 +2,72 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DeleteCandidateRequest;
+use App\Http\Requests\UpdateVotingOptionRequest;
 use App\Models\Candidate;
 use App\Http\Requests\StoreCandidateRequest;
-use App\Http\Requests\UpdateCandidateRequest;
+use Illuminate\Http\JsonResponse;
+use Inertia\Inertia;
 
+/**
+ *
+ */
 class CandidateController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Show index vue view
      *
-     * @return \Illuminate\Http\Response
+     */
+    public function indexView(): \Inertia\Response
+    {
+        return Inertia::render('Candidates/Index');
+    }
+
+    //From this point, all the routes are used as API
+
+    /**
+     * Get all candidates for API
      */
     public function index()
     {
-        //
+        $candidates = Candidate::all();
+        return response($candidates);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreCandidateRequest  $request
-     * @return \Illuminate\Http\Response
+     * @param StoreCandidateRequest $request
+     * @return JsonResponse
      */
-    public function store(StoreCandidateRequest $request)
+    public function store(StoreCandidateRequest $request): JsonResponse
     {
-        //
+        unset($request->id);
+        Candidate::create($request->all());
+        return response()->json(['message' => 'Candidato creado exitosamente']);
+
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Candidate  $candidate
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Candidate $candidate)
-    {
-        //
-    }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Candidate  $candidate
-     * @return \Illuminate\Http\Response
+     * @param UpdateVotingOptionRequest $request
+     * @param Candidate $candidate
+     * @return JsonResponse
      */
-    public function edit(Candidate $candidate)
+    public function update(UpdateVotingOptionRequest $request, Candidate $candidate): JsonResponse
     {
-        //
+        $candidate->update($request->all());
+        return response()->json(['message' => 'Candidato actualizado exitosamente', 200]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateCandidateRequest  $request
-     * @param  \App\Models\Candidate  $candidate
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateCandidateRequest $request, Candidate $candidate)
-    {
-        //
-    }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Candidate  $candidate
-     * @return \Illuminate\Http\Response
+     * @param DeleteCandidateRequest $request
+     * @param Candidate $candidate
+     * @return JsonResponse
      */
-    public function destroy(Candidate $candidate)
+    public function destroy(DeleteCandidateRequest $request, Candidate $candidate): JsonResponse
     {
-        //
+        $candidate->delete();
+        return response()->json(['message' => 'Candidato eliminado exitosamente']);
     }
 }

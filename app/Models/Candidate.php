@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Candidate extends Model
 {
+    protected $guarded = ['id'];
+
     use HasFactory;
 
     public function votingOption()

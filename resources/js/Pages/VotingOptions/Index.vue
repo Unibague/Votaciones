@@ -223,7 +223,7 @@ export default {
             headers: [
                 {text: 'Nombre de la opción de votación', value: 'name'},
                 {text: 'Nivel de votación', value: 'key'},
-                {text: 'Código de la opción de votación', value: 'value'},
+                {text: 'Código de la opción de votación', value: 'entityName'},
                 {text: 'Acciones', value: 'actions', sortable: false},
             ],
             votingOptions: [],

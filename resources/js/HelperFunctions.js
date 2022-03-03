@@ -12,7 +12,7 @@ const prepareErrorText = (e) => {
 }
 const checkIfModelHasEmptyProperties = (model) => {
     for (const modelKey in model) {
-        if (model[modelKey] === '') {
+        if (model[modelKey] === '' || model[modelKey] === undefined) {
             return true;
         }
     }

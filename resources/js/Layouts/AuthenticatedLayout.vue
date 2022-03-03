@@ -164,6 +164,19 @@ export default {
                 icon: 'mdi-cog-box',
                 items: [
                     {
+                        name: 'Opciones de votación',
+                        routeName: 'votingOptions.index',
+                        role: 3,
+                        icon: 'mdi-calendar'
+                    },
+
+                    {
+                        name: 'Candidatos',
+                        routeName: 'candidates.index',
+                        role: 3,
+                        icon: 'mdi-calendar'
+                    },
+                    {
                         name: 'Jurados',
                         routeName: 'jurors.index',
                         role: 3,
@@ -172,13 +185,6 @@ export default {
                     {
                         name: 'Mesas de votación',
                         routeName: 'tables.index',
-                        role: 3,
-                        icon: 'mdi-calendar'
-                    },
-
-                    {
-                        name: 'Opciones de votación',
-                        routeName: 'votingOptions.index',
                         role: 3,
                         icon: 'mdi-calendar'
                     },
@@ -217,7 +223,6 @@ export default {
                         role: 3,
                         icon: 'mdi-calendar'
                     },
-
 
 
                 ]

@@ -15,12 +15,12 @@ class CreateCandidatesTable extends Migration
     {
         Schema::create('candidates', function (Blueprint $table) {
             $table->id();
-            $table->text('principal');
+            $table->text('principal_name');
             $table->text('principal_faculty');
             $table->text('principal_program');
-            $table->text('candidate');
-            $table->text('candidate_faculty');
-            $table->text('candidate_program');
+            $table->text('substitute_name');
+            $table->text('substitute_faculty');
+            $table->text('substitute_program');
             $table->foreignId('voting_option_id')->constrained()->cascadeOnDelete();
 
             $table->timestamps();

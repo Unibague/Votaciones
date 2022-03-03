@@ -6,6 +6,7 @@ use App\Http\Requests\DeleteVotingOptionRequest;
 use App\Models\VotingOption;
 use App\Http\Requests\StoreVotingOptionRequest;
 use App\Http\Requests\UpdateVotingOptionRequest;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class VotingOptionController extends Controller
@@ -26,7 +27,20 @@ class VotingOptionController extends Controller
      */
     public function index()
     {
-        $votingOptions = VotingOption::all(['id', 'name', 'key','value']);
+        $votingOptions = DB::table('voting_options')->select(['id', 'name', 'key', 'value'])->get();
+        foreach ($votingOptions as $votingOption) {
+            if ($votingOption->key === 'faculty') {
+                $faculty = DB::table('faculties')->where('id', '=', $votingOption->value)->first();
+                $votingOption->entityName = $faculty->name ?? 'No figura';
+            }
+            if ($votingOption->key === 'program') {
+                $program = DB::table('programs')->where('id', '=', $votingOption->value)->first();
+                $votingOption->entityName = $program->name ?? 'No figura';
+            }
+            if ($votingOption->key === 'all') {
+                $votingOption->entityName = 'Todos';
+            }
+        }
         return response($votingOptions);
     }
 

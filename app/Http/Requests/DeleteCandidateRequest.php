@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreCandidateRequest extends FormRequest
+class DeleteCandidateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,13 +24,7 @@ class StoreCandidateRequest extends FormRequest
     public function rules()
     {
         return [
-            'principal_name' => 'required|string',
-            'principal_faculty' => 'required|string',
-            'principal_program' => 'required|string',
-            'substitute_name' => 'required|string',
-            'substitute_faculty' => 'required|string',
-            'substitute_program' => 'required|string',
-            'voting_option_id' => 'required|numeric',
+            //
         ];
     }
 }
