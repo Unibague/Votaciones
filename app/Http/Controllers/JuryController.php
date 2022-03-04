@@ -28,7 +28,7 @@ class JuryController extends Controller
      */
     public function index(): \Illuminate\Http\JsonResponse
     {
-        $jurorRole = Role::where('name', '=', 'jurado')->firstOrFail();
+        $jurorRole = Role::where('name', '=', 'juror')->firstOrFail();
         $users = $jurorRole->users()->with('table')->get();
         return response()->json($users);
     }

@@ -12,6 +12,10 @@ Route::get('/redirect', function () {
         return redirect()->route('programs.index');
     }
 
+    if (auth()->user()->hasRole('juror')) {
+        return redirect()->route('votes.authorize');
+    }
+
 })->middleware('auth')->name('handleRoleRedirect');
 
 /*
@@ -63,6 +67,29 @@ Route::apiResource('api/candidates', \App\Http\Controllers\CandidateController::
 
 Route::get('/candidates', [\App\Http\Controllers\CandidateController::class, 'indexView'])->middleware(['auth', 'isAdmin'])->name('candidates.index');
 
+
+/*
+|--------------------------------------------------------------------------
+| Votes
+|--------------------------------------------------------------------------
+*/
+Route::apiResource('api/votes', \App\Http\Controllers\VoteController::class, [
+    'as' => 'api'
+])->middleware('auth');
+
+Route::get('api/votes/getVoterVotingOptions/{voter}', [\App\Http\Controllers\VoteController::class, 'getVoterVotingOptions'])->name('api.votes.getVoterVotingOptions');
+
+Route::get('/vote', [\App\Http\Controllers\VoteController::class, 'vote'])->middleware('auth')->name('votes.vote');
+Route::get('/votes/authorize', [\App\Http\Controllers\VoteController::class, 'authorizeVote'])->middleware('auth')->name('votes.authorize');
+
+
+/*
+|--------------------------------------------------------------------------
+| Votes
+|--------------------------------------------------------------------------
+*/
+Route::get('api/voter/searchByIdentificationNumber', [\App\Http\Controllers\VoterController::class, 'searchByIdentificationNumber'])
+    ->middleware('auth')->name('api.voters.searchByIdentificationNumber');
 
 /*
 |--------------------------------------------------------------------------

@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreVoterRequest extends FormRequest
+class SearchVoterByIdentificationNumberRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class StoreVoterRequest extends FormRequest
      */
     public function authorize()
     {
-        return auth() - user()->hasRole('juror');
+       return auth()->user()->hasRole('juror');
     }
 
     /**
@@ -24,7 +24,7 @@ class StoreVoterRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'identification_number' => 'required|string'
         ];
     }
 }

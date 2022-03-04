@@ -155,7 +155,12 @@ export default {
     data: () => ({
         drawer: false,
         menu:
-            [],
+            [ {
+                name: 'Habilitar voto',
+                routeName: 'votes.authorize',
+                role: 2,
+                icon: 'mdi-calendar'
+            },],
         dropdowns: [
             {
                 name: 'Gestionar elecciones',
