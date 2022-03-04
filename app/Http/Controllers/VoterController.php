@@ -16,10 +16,10 @@ class VoterController extends Controller
         $voter = Voter::with(['faculty', 'program'])->where('identification_number', $request->input('identification_number'))->firstOrFail();
 
         //Check if already voted
-        $votes = Vote::where('voter_id', '=', $voter->id)->first();
-        if ($votes !== null) {
+        if ($voter->hasVoted()) {
             return response()->json(['message' => 'El usuario ya ha votado'], 403);
         }
+        //Return the voter faculty and program
         return $voter;
     }
 
