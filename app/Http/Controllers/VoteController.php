@@ -5,35 +5,43 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AuthorizeVoteRequest;
 use App\Models\Vote;
 use App\Http\Requests\StoreVoteRequest;
-use App\Http\Requests\UpdateVoteRequest;
 use App\Models\Voter;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
 
+/**
+ *
+ */
 class VoteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
 
+    /**
+     * @param Voter $voter
+     * @return Builder[]|Collection
+     */
     public function getVoterVotingOptions(Voter $voter)
     {
-        $votingOptions = $voter->getVotingOptions();
-        return $votingOptions;
+        return $voter->getVotingOptions();
     }
 
-    public function authorizeVote(AuthorizeVoteRequest $request)
+    /**
+     * @param AuthorizeVoteRequest $request
+     * @return Response
+     */
+    public function authorizeVote(AuthorizeVoteRequest $request): Response
     {
         return Inertia::render('Votes/Authorize.vue');
     }
 
-    public function vote(Request $request)
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    public function vote(Request $request): Response
     {
         $voter = Voter::findOrFail($request->input('voterId'));
         return Inertia::render('Votes/Cast.vue', [
@@ -42,17 +50,10 @@ class VoteController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @param StoreVoteRequest $request
+     * @return JsonResponse
      */
-    public function create()
-    {
-        //
-    }
-
-
-    public function store(StoreVoteRequest $request)
+    public function store(StoreVoteRequest $request): JsonResponse
     {
         //verify if the user already voted
         $voter = Voter::findOrFail($request->input('userVotes')[0]['voter_id']);
@@ -65,7 +66,7 @@ class VoteController extends Controller
             Vote::create([
                 'voter_id' => $userVote['voter_id'],
                 'voting_option_id' => $userVote['voting_option_id'],
-                'candidate_id' => $userVote['candidate_id'],
+                'candidate_id' => $userVote['candidate_id'] === 0 ? null : $userVote['candidate_id'],
                 'user_id' => auth()->user()->id,
                 'table_id' => auth()->user()->table->id,
             ]);
@@ -73,48 +74,4 @@ class VoteController extends Controller
         return response()->json(['message' => 'Voto registrado exitosamente']);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param \App\Models\Vote $vote
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Vote $vote)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param \App\Models\Vote $vote
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Vote $vote)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \App\Http\Requests\UpdateVoteRequest $request
-     * @param \App\Models\Vote $vote
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateVoteRequest $request, Vote $vote)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param \App\Models\Vote $vote
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Vote $vote)
-    {
-        //
-    }
 }
