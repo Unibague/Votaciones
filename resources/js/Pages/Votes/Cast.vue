@@ -15,8 +15,8 @@
                 <h2 class="mb-6 text-center">{{ votingOption.name }}</h2>
                 <v-row>
                     <v-col cols="3" v-for="candidate in votingOption.candidates" :key="candidate.name">
-                        <vue-glow color="#1e3a62" mode="hex" elevation="10"
-                                  :intensity="votingOption.selectedCandidateId === candidate.id ? 1.5:0">
+                        <vue-glow color="#1e3a62" mode="hex" elevation="20"
+                                  :intensity="votingOption.selectedCandidateId === candidate.id ? 2.5:0">
                             <v-card outlined>
                                 <v-card-title>
                                 <span class="text-truncate">
@@ -43,9 +43,13 @@
                                         @click="selectCandidate(votingOption,candidate.id)"
                                         rounded
                                         color="primario"
-                                        class="grey--text text--lighten-4">
+                                        class="grey--text text--lighten-4"
+                                        :disabled="votingOption.selectedCandidateId === candidate.id"
+                                    >
                                             <span class="px-2">
-                                                Seleccionar
+                                                {{
+                                                    votingOption.selectedCandidateId === candidate.id ? 'Seleccionado' : 'Seleccionar'
+                                                }}
                                             </span>
                                     </v-btn>
                                 </v-card-actions>
@@ -54,8 +58,8 @@
                     </v-col>
 
                     <v-col cols="3">
-                        <vue-glow color="#1e3a62" mode="hex" elevation="10"
-                                  :intensity="votingOption.selectedCandidateId === 0? 1.5:0">
+                        <vue-glow color="#1e3a62" mode="hex" elevation="20"
+                                  :intensity="votingOption.selectedCandidateId === 0? 2.5:0">
                             <v-card outlined>
                                 <v-card-title>
                                 <span class="text-truncate">
@@ -76,9 +80,13 @@
                                         @click="selectCandidate(votingOption,0)"
                                         rounded
                                         color="primario"
-                                        class="grey--text text--lighten-4">
+                                        class="grey--text text--lighten-4"
+                                        :disabled="votingOption.selectedCandidateId  === 0"
+                                    >
                                             <span class="px-2">
-                                                Seleccionar
+                                                {{
+                                                    votingOption.selectedCandidateId === 0 ? 'Seleccionado' : 'Seleccionar'
+                                                }}
                                             </span>
                                     </v-btn>
                                 </v-card-actions>
