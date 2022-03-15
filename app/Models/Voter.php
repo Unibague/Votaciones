@@ -60,7 +60,7 @@ class Voter extends Model
 
     public function getVotingOptions()
     {
-        return VotingOption::with('candidates')->where('key', '=', 'faculty')
+        $VotingOptionsQuery = VotingOption::with('candidates')->where('key', '=', 'faculty')
             ->where('value', '=', $this->faculty->id)
             ->orWhere(function ($query) {
                 $query->where('key', '=', 'program')
@@ -68,8 +68,24 @@ class Voter extends Model
             })
             ->orWhere(function ($query) {
                 $query->where('key', '=', 'all');
-            })
-            ->get();
+            });
 
+
+        //Check if another user with the same identification number exists
+        $secondUser = self::where('identification_number', '=', $this->identification_number)
+            ->where('id', '!=', $this->id)->first();
+
+        //If not null, append the program and faculty of that user
+        if ($secondUser !== null) {
+            $VotingOptionsQuery->orWhere(function ($query) use ($secondUser) {
+                $query->where('key', '=', 'program')
+                    ->where('value', '=', $secondUser->program->id);
+            })->orWhere(function ($query) {
+                $query->where('key', '=', 'faculty')
+                    ->where('value', '=', $this->faculty->id);
+            });
+        }
+
+        return $VotingOptionsQuery->get();
     }
 }
