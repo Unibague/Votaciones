@@ -104,6 +104,9 @@ Route::apiResource('api/tables', \App\Http\Controllers\TableController::class, [
 //Get all programs (view)
 Route::get('/tables', [\App\Http\Controllers\TableController::class, 'indexView'])->middleware(['auth', 'isAdmin'])->name('tables.index');
 
+//Get table voting results
+Route::get('/tables/{table}/report', [\App\Http\Controllers\TableController::class, 'generateReport'])->middleware(['auth', 'isAdmin'])->name('tables.report');
+
 /*
 |--------------------------------------------------------------------------
 | Roles
