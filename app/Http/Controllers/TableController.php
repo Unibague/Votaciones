@@ -7,6 +7,7 @@ use App\Http\Requests\GenerateTableReportRequest;
 use App\Http\Requests\StoreTableRequest;
 use App\Http\Requests\UpdateTableRequest;
 use App\Models\Table;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Inertia\Inertia;
 
@@ -74,8 +75,9 @@ class TableController extends Controller
 
     public function generateReport(GenerateTableReportRequest $request, Table $table)
     {
-        $votingReport = $table->getVotingReport();
-
-        return $votingReport;
+        $votes = $table->getVotingReport();
+        $tableName = $table->name;
+        return Pdf::loadView('table-report', compact('votes', 'tableName'))
+            ->stream("Reporte mesa ${tableName}.pdf");
     }
 }

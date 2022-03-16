@@ -194,6 +194,13 @@ export default {
                         icon: 'mdi-calendar'
                     },
 
+                    {
+                        name: 'Resultados generales',
+                        routeName: 'tables.index',
+                        role: 3,
+                        icon: 'mdi-calendar'
+                    },
+
                 ]
 
             },

@@ -44,6 +44,12 @@
                         mdi-pencil
                     </v-icon>
                     <v-icon
+                        class="mr-2 primario--text"
+                        @click="openTableVotingResults(item)"
+                    >
+                        mdi-clipboard-check
+                    </v-icon>
+                    <v-icon
                         class="primario--text"
                         @click="confirmDeleteTable(item)"
                     >
@@ -248,6 +254,10 @@ export default {
         this.isLoading = false;
     },
     methods: {
+
+        openTableVotingResults: function (table){
+          window.open(route('tables.report',{table:table.id}))
+        },
         openEditTableModal: function (role) {
             this.editedTable = {...role};
             this.editTableDialog = true;

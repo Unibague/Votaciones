@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -48,7 +49,7 @@ class Table extends Model
     {
         return DB::table('votes')
             ->select([
-                'candidates.principal_name', 'candidates.substitute_name', 'voting_options.name AS Opción de votación', DB::raw('COUNT(*) AS "numero votos"')
+                'candidates.principal_name', 'candidates.substitute_name', 'voting_options.name AS voting_option', DB::raw('COUNT(*) AS total_votes')
             ])
             ->where('table_id', '=', $this->id)
             ->leftJoin('voting_options', 'voting_options.id', '=', 'votes.voting_option_id')
@@ -56,5 +57,6 @@ class Table extends Model
             ->groupBy('candidates.principal_name', 'voting_options.name', 'candidates.substitute_name')
             ->orderByRaw('voting_options.name , "numero votos"')
             ->get();
+
     }
 }
