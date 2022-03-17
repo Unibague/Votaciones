@@ -27,9 +27,6 @@ class StoreCandidateRequest extends FormRequest
             'principal_name' => 'required|string',
             'principal_faculty' => 'required|string',
             'principal_program' => 'required|string',
-            'substitute_name' => 'required|string',
-            'substitute_faculty' => 'required|string',
-            'substitute_program' => 'required|string',
             'voting_option_id' => 'required|numeric',
         ];
     }

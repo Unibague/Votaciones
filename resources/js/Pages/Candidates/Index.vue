@@ -55,7 +55,7 @@
 
             <!------------Seccion de dialogos ---------->
 
-            <!--Crear facultad -->
+            <!--Crear candidato -->
             <v-dialog
                 v-model="createCandidateDialog"
                 persistent
@@ -99,22 +99,19 @@
 
                                 <v-col cols="12">
                                     <v-text-field
-                                        label="Nombre del suplente *"
-                                        required
+                                        label="Nombre del suplente"
                                         v-model="newCandidate.substitute_name"
                                     ></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
                                     <v-text-field
-                                        label="Facultad del suplente *"
-                                        required
+                                        label="Facultad del suplente"
                                         v-model="newCandidate.substitute_faculty"
                                     ></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
                                     <v-text-field
-                                        label="Programa del suplente *"
-                                        required
+                                        label="Programa del suplente"
                                         v-model="newCandidate.substitute_program"
                                     ></v-text-field>
                                 </v-col>
@@ -152,7 +149,7 @@
                     </v-card-actions>
                 </v-card>
             </v-dialog>
-            <!--Confirmar borrar facultad-->
+            <!--Confirmar borrar candidato-->
             <confirm-dialog
                 :show="deleteCandidateDialog"
                 @canceled-dialog="deleteCandidateDialog = false"

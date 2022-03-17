@@ -74,9 +74,9 @@ class Candidate {
         this._principal_name = principal_name;
         this._principal_faculty = principal_faculty;
         this._principal_program = principal_program;
-        this._substitute_name = substitute_name;
-        this._substitute_faculty = substitute_faculty;
-        this._substitute_program = substitute_program;
+        this._substitute_name = substitute_name ?? null;
+        this._substitute_faculty = substitute_faculty ?? null;
+        this._substitute_program = substitute_program ?? null;
         this._voting_option_id = voting_option_id;
     }
 }

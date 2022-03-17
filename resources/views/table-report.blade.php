@@ -56,14 +56,27 @@
                     <td>
                         {{$vote->voting_option}}
                     </td>
+                    <!-- If there is no candidate principal name, is because is empty vote-->
+                    @if($vote->principal_name === null)
+                        <td>
+                            Voto en blanco
+                        </td>
 
-                    <td>
-                        {{$vote->principal_name ?? 'Voto en blanco'}}
-                    </td>
+                        <td>
+                            Voto en blanco
+                        </td>
+                    @else
+                    <!--There is candidate register, so, and empty substitute_name would mean there is no substitute
+                        candidate registered-->
+                        <td>
+                            {{$vote->principal_name}}
+                        </td>
 
-                    <td>
-                        {{$vote->substitute_name?? 'Voto en blanco'}}
-                    </td>
+                        <td>
+                            {{$vote->substitute_name?? 'Sin candidato'}}
+                        </td>
+                    @endif
+
                     <td>
                         {{$vote->total_votes}}
                     </td>

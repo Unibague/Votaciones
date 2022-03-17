@@ -18,9 +18,9 @@ class CreateCandidatesTable extends Migration
             $table->text('principal_name');
             $table->text('principal_faculty');
             $table->text('principal_program');
-            $table->text('substitute_name');
-            $table->text('substitute_faculty');
-            $table->text('substitute_program');
+            $table->text('substitute_name')->nullable();
+            $table->text('substitute_faculty')->nullable();
+            $table->text('substitute_program')->nullable();
             $table->foreignId('voting_option_id')->constrained()->cascadeOnDelete();
 
             $table->timestamps();

@@ -30,12 +30,13 @@
                                 </v-card-subtitle>
                                 <v-card-title style="padding-top: 0">
                                      <span class="text-truncate">
-                                    {{ candidate.substitute_name }}
+                                    {{ candidate.substitute_name != null? candidate.substitute_name: '⠀' }}
                                     </span>
                                 </v-card-title>
                                 <v-card-subtitle>
-                                    Facultad {{ candidate.substitute_faculty }} | Programa {{
-                                        candidate.substitute_program
+                                    {{
+                                        candidate.substitute_faculty != null && candidate.substitute_program != null ?
+                                            `Facultad ${candidate.substitute_faculty} | Programa ${candidate.substitute_program}` : '⠀'
                                     }}
                                 </v-card-subtitle>
                                 <v-card-actions class="d-flex justify-center mb-2">
@@ -69,11 +70,11 @@
                                 <v-card-subtitle>
                                     Selecciona para votar en blanco
                                 </v-card-subtitle>
-                                <v-card-title style="padding-top: 0">
-                                    Sin candidatos
+                                <v-card-title style="padding-top: 0" class="transparent--text">
+                                    ⠀
                                 </v-card-title>
-                                <v-card-subtitle>
-                                    No votarás por ningun candidato
+                                <v-card-subtitle class="transparent--text">
+                                    ⠀
                                 </v-card-subtitle>
                                 <v-card-actions class="d-flex justify-center mb-2">
                                     <v-btn
