@@ -19,6 +19,11 @@ class RoleSeeder extends Seeder
             'customId' => 1
         ]);
         Role::create([
+            'name' => 'juror',
+            'customId' => 2
+        ]);
+
+        Role::create([
             'name' => 'admin',
             'customId' => 3
         ]);
