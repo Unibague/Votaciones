@@ -93,7 +93,7 @@ export default {
     },
     methods: {
         authorizeVote: function (voterId) {
-            window.open(route('votes.vote') + '?voterId=' + voterId);
+            window.open(route('votes.vote') + '?voterId=' + voterId, '_blank', 'toolbar=0,location=0,menubar=0');
             clearModelProperties(this.voter);
             this.hasData = false;
         },
