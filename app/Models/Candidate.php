@@ -51,5 +51,12 @@ class Candidate extends Model
     {
         return $this->hasMany(Vote::class);
     }
+
+    public function photo()
+{
+    return $this->hasOne(Photo::class);
 }
+
+}
+
 

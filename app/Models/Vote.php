@@ -38,7 +38,15 @@ class Vote extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    // Explicitly list the fields you allow to be mass assigned
+    protected $fillable = [
+        'voter_id',
+        'candidate_id',
+        'voting_option_id',
+        'user_id',
+        'table_id',
+        'certificate_token',
+    ];
 
     public function user()
     {

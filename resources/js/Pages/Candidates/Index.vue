@@ -2,15 +2,15 @@
     <AuthenticatedLayout>
 
         <v-snackbar
-            v-model="snackbar.status"
-            :timeout="snackbar.timeout"
-            color="red accent-2"
-            top
-            right
-        >
-            {{ snackbar.text }}
+  v-model="snackbar.status"
+  :timeout="snackbar.timeout"
+  :color="snackbar.color"
+  top
+  right
+>
+  {{ snackbar.text }}
+</v-snackbar>
 
-        </v-snackbar>
 
         <v-container>
             <div class="d-flex flex-column align-end mb-8">
@@ -125,6 +125,27 @@
                                         :item-text="(votingOption)=>votingOption.name"
                                     ></v-select>
                                 </v-col>
+                                <v-col cols="12">
+  <v-file-input
+    v-model="newCandidate.photo"
+    label="Foto del candidato principal"
+    accept="image/*"
+    prepend-icon="mdi-camera"
+    @change="previewImage($event, 'new')"
+  />
+</v-col>
+<v-col cols="12" class="text-center" v-if="previewPhotoNew">
+  <v-img
+    :src="previewPhotoNew"
+    max-height="150"
+    max-width="150"
+    class="mx-auto rounded elevation-2"
+    contain
+  />
+</v-col>
+
+
+
 
                             </v-row>
                         </v-container>
@@ -238,6 +259,26 @@
                                         :item-text="(votingOption)=>votingOption.name"
                                     ></v-select>
                                 </v-col>
+                                <v-col cols="12">
+  <v-file-input
+    v-model="editedCandidate.photo"
+    label="Foto del candidato principal"
+    accept="image/*"
+    prepend-icon="mdi-camera"
+    @change="previewImage($event, 'edit')"
+  />
+</v-col>
+<v-col cols="12" class="text-center" v-if="previewPhotoEdit">
+  <v-img
+    :src="previewPhotoEdit"
+    max-height="150"
+    max-width="150"
+    class="mx-auto rounded elevation-2"
+    contain
+  />
+</v-col>
+
+
 
                             </v-row>
                         </v-container>
@@ -309,7 +350,7 @@ export default {
             snackbar: {
                 text: '...',
                 status: false,
-                timeout: 2000
+                timeout: 2000,
             },
             //Dialogs
             createCandidateDialog: false,
@@ -318,7 +359,12 @@ export default {
 
             //Overlays
             isLoading: true,
+
+            previewPhotoNew: null,
+previewPhotoEdit: null,
+
         }
+        
     },
     async created() {
         await this.getAllCandidates();
@@ -326,35 +372,81 @@ export default {
         this.isLoading = false;
     },
     methods: {
-        openEditCandidateModal: function (candidate) {
-            this.editedCandidate = {...candidate};
-            this.editCandidateDialog = true;
-        },
-        editCandidate: async function () {
-            //Verify request
-            if (checkIfModelHasEmptyProperties(this.editedCandidate)) {
-                this.snackbar.text = 'Por favor, llena todos los campos del formulario';
-                this.snackbar.status = true;
-                return;
-            }
-            //Recollect information
-            let data = this.editedCandidate;
 
-            try {
-                let request = await axios.patch(route('api.candidates.update', {'candidate': this.editedCandidate.id}), data);
-                this.editCandidateDialog = false;
-                this.snackbar.text = request.data.message;
-                this.snackbar.status = true;
-                this.getAllCandidates();
+        previewImage(file, type) {
+    if (!file) return;
 
-                //Clear candidate information
-                clearModelProperties(this.editedCandidate);
-                console.log(this.editedCandidate);
-            } catch (e) {
-                this.snackbar.text = prepareErrorText(e);
-                this.snackbar.status = true;
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+        if (type === 'new') {
+            this.previewPhotoNew = e.target.result;
+        } else if (type === 'edit') {
+            this.previewPhotoEdit = e.target.result;
+        }
+    };
+
+    reader.readAsDataURL(file);
+},
+
+openEditCandidateModal: function (candidate) {
+    this.editedCandidate = { ...candidate };
+    this.editCandidateDialog = true;
+
+    // Verificar si hay imagen y establecer la previsualización
+    if (candidate.photo && candidate.photo.path) {
+        this.previewPhotoEdit = `/storage/${candidate.photo.path}`;
+        this.editedCandidate.photo = null; // Para que si no elige una nueva, no se reemplace
+    } else {
+        this.previewPhotoEdit = null;
+    }
+},
+
+editCandidate: async function () {
+    const formData = new FormData();
+
+    formData.append('principal_name', this.editedCandidate.principal_name);
+    formData.append('principal_faculty', this.editedCandidate.principal_faculty);
+    formData.append('principal_program', this.editedCandidate.principal_program);
+    formData.append('voting_option_id', this.editedCandidate.voting_option_id);
+
+    if (this.editedCandidate.substitute_name)
+        formData.append('substitute_name', this.editedCandidate.substitute_name);
+    if (this.editedCandidate.substitute_faculty)
+        formData.append('substitute_faculty', this.editedCandidate.substitute_faculty);
+    if (this.editedCandidate.substitute_program)
+        formData.append('substitute_program', this.editedCandidate.substitute_program);
+
+    if (this.editedCandidate.photo instanceof File)
+        formData.append('photo', this.editedCandidate.photo);
+
+    // 👇 Agrega esto para que Laravel sepa que es un PUT
+    formData.append('_method', 'PUT');
+
+    try {
+        const request = await axios.post(route('api.candidates.update', { candidate: this.editedCandidate.id }), formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
             }
-        },
+        });
+
+        this.editCandidateDialog = false;
+        this.snackbar.text = request.data.message;
+        this.snackbar.color = 'green';
+        this.snackbar.status = true;
+
+        this.getAllCandidates();
+        clearModelProperties(this.editedCandidate);
+        this.editedCandidate.photo = undefined;
+
+    } catch (e) {
+        console.log(e.response.data);
+        this.snackbar.text = e.response.data.message || 'Error al actualizar candidato';
+this.snackbar.color = 'red'; 
+this.snackbar.status = true;
+
+    }
+},
 
         confirmDeleteCandidate: function (candidate) {
             this.deletedCandidateId = candidate.id;
@@ -362,19 +454,19 @@ export default {
         },
 
         deleteCandidate: async function (candidateId) {
-            try {
-                let request = await axios.delete(route('api.candidates.destroy', {candidate: candidateId}));
-                this.deleteCandidateDialog = false;
-                this.snackbar.text = request.data.message;
-                this.snackbar.status = true;
-                this.getAllCandidates();
+    try {
+        let request = await axios.delete(route('api.candidates.destroy', {candidate: candidateId}));
+        this.deleteCandidateDialog = false;
+        this.snackbar.text = request.data.message;
+        this.snackbar.status = true;
+        this.getAllCandidates();
 
-            } catch (e) {
-                this.snackbar.text = e.response.data.message;
-                this.snackbar.status = true;
-            }
-
-        },
+    } catch (e) {
+        console.error(e.response?.data || e);
+        this.snackbar.text = e.response?.data?.message || 'Error al eliminar candidato';
+        this.snackbar.status = true;
+    }
+},
         getAllCandidates: async function () {
             let request = await axios.get(route('api.candidates.index'));
             this.candidates = request.data;
@@ -387,29 +479,48 @@ export default {
 
 
         createCandidate: async function () {
-            if (checkIfModelHasEmptyProperties(this.newCandidate)) {
-                this.snackbar.text = 'Por favor, llena todos los campos del formulario';
-                this.snackbar.status = true;
-                return;
+    const formData = new FormData();
+
+    formData.append('principal_name', this.newCandidate.principal_name);
+    formData.append('principal_faculty', this.newCandidate.principal_faculty);
+    formData.append('principal_program', this.newCandidate.principal_program);
+    formData.append('voting_option_id', this.newCandidate.voting_option_id);
+
+    if (this.newCandidate.substitute_name)
+        formData.append('substitute_name', this.newCandidate.substitute_name);
+    if (this.newCandidate.substitute_faculty)
+        formData.append('substitute_faculty', this.newCandidate.substitute_faculty);
+    if (this.newCandidate.substitute_program)
+        formData.append('substitute_program', this.newCandidate.substitute_program);
+
+    if (this.newCandidate.photo)
+        formData.append('photo', this.newCandidate.photo);
+
+    try {
+        const request = await axios.post(route('api.candidates.store'), formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
             }
+        });
 
-            let data = this.newCandidate.toObject()
+        this.createCandidateDialog = false;
+        this.snackbar.text = request.data.message;
+        this.snackbar.color = 'green';
+        this.snackbar.status = true;
 
-            try {
-                let request = await axios.post(route('api.candidates.store'), data);
-                this.createCandidateDialog = false;
-                this.snackbar.text = request.data.message;
-                this.snackbar.status = true;
-                this.getAllCandidates();
+        this.getAllCandidates();
+        this.newCandidate = new Candidate();
+        this.previewPhotoNew = null;
+    } catch (e) {
+        console.log(e.response.data);
+        this.snackbar.text = e.response.data.message || 'Error al actualizar candidato';
+this.snackbar.color = 'red'; 
+this.snackbar.status = true;
 
-                //Clear candidate information
-                this.newCandidate = new Candidate();
-            } catch (e) {
-                this.snackbar.text = e.response.data.message;
-                this.snackbar.status = true;
-            }
+    }
 
-        },
+},
+
     },
 
 

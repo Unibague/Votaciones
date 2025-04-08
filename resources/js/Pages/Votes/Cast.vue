@@ -18,6 +18,20 @@
                         <vue-glow color="#1e3a62" mode="hex" elevation="20"
                                   :intensity="votingOption.selectedCandidateId === candidate.id ? 2.5:0">
                             <v-card outlined>
+                                <v-card-text class="d-flex justify-center">
+  <v-avatar size="200">
+    <v-img
+  v-if="candidate.photo && candidate.photo.path"
+  :src="`/storage/${candidate.photo.path}`"
+  alt="Foto del candidato"
+  cover
+  @error="() => console.log('Error al cargar imagen')"
+/>
+<v-icon v-else large>mdi-account-circle</v-icon>
+
+  </v-avatar>
+</v-card-text>
+
                                 <v-card-title>
                                 <span class="text-truncate">
                                    {{ candidate.principal_name }}

@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Mail\VoteCertificateMail;
+
 
 Route::get('/', function () {
     return Inertia::render('Bienvenido');
@@ -91,6 +93,10 @@ Route::get('/votes/authorize', [\App\Http\Controllers\VoteController::class, 'au
 Route::get('api/voter/searchByIdentificationNumber', [\App\Http\Controllers\VoterController::class, 'searchByIdentificationNumber'])
     ->middleware('auth')->name('api.voters.searchByIdentificationNumber');
 
+    Route::put('api/voter/updateEmail', [\App\Http\Controllers\VoterController::class, 'updateEmail'])
+    ->middleware('auth')
+    ->name('api.voters.updateEmail');
+
 /*
 |--------------------------------------------------------------------------
 | Tables
@@ -154,3 +160,26 @@ Route::get('/jurors', [\App\Http\Controllers\JuryController::class, 'indexView']
 Route::get('login', [\App\Http\Controllers\AuthController::class, 'redirectGoogleLogin'])->name('login');
 Route::get('/google/callback', [\App\Http\Controllers\AuthController::class, 'handleGoogleCallback']);
 
+/*
+|--------------------------------------------------------------------------
+| certificate
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/certificate/{token}', [\App\Http\Controllers\VoteCertificateController::class, 'show'])
+    ->name('votes.certificate');
+
+    use App\Models\Vote;
+
+    Route::get('/test-email', function () {
+        $vote = Vote::latest()->first(); 
+        $name = $vote->voter->name;
+        $token = $vote->certificate_token;
+        $certificateUrl = route('votes.certificate', ['token' => $token]);
+        $qr = 'data:image/png;base64,' . base64_encode(QrCode::format('png')->size(200)->generate($certificateUrl));
+    
+        Mail::to('practicantes.g3@unibague.edu.co')->send(new VoteCertificateMail($name, $certificateUrl, $qr));
+    
+        return 'Correo enviado con éxito ';
+    });
+    
