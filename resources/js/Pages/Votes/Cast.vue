@@ -18,19 +18,23 @@
                         <vue-glow color="#1e3a62" mode="hex" elevation="20"
                                   :intensity="votingOption.selectedCandidateId === candidate.id ? 2.5:0">
                             <v-card outlined>
-                                <v-card-text class="d-flex justify-center">
-  <v-avatar size="200">
-    <v-img
-  v-if="candidate.photo && candidate.photo.path"
-  :src="`/storage/${candidate.photo.path}`"
-  alt="Foto del candidato"
+                                <v-card-text class="d-flex justify-space-around align-center">
+  <!-- Foto candidato principal -->
+  <div class="text-center">
+    <v-avatar size="120" class="mb-2">
+        <v-img
+  v-if=" candidate.principal_photo &&  candidate.principal_photo.path"
+  :src="`/storage/${ candidate.principal_photo.path}`"
+  alt="Foto principal"
   cover
-  @error="() => console.log('Error al cargar imagen')"
-/>
-<v-icon v-else large>mdi-account-circle</v-icon>
+        @error="() => console.log('Error al cargar imagen principal')"
+      />
+      <v-icon v-else large>mdi-account-circle</v-icon>
+    </v-avatar>
+  </div>
 
-  </v-avatar>
 </v-card-text>
+
 
                                 <v-card-title>
                                 <span class="text-truncate">
@@ -42,6 +46,25 @@
                                         candidate.principal_program
                                     }}
                                 </v-card-subtitle>
+                               <!-- Foto candidato suplente -->
+                               <v-card-text class="d-flex justify-space-around align-center">
+
+                               <div class="text-center">
+    <v-avatar size="120" class="mb-2">
+      <v-img
+  v-if="candidate.substitute_photo && candidate.substitute_photo.path"
+  :src="`/storage/${candidate.substitute_photo.path}`"
+
+        alt="Foto suplente"
+        cover
+        @error="() => console.log('Error al cargar imagen suplente')"
+      />
+      <v-icon v-else large>mdi-account-circle</v-icon>
+    </v-avatar>
+  </div>
+
+</v-card-text>
+  
                                 <v-card-title style="padding-top: 0">
                                      <span class="text-truncate">
                                     {{ candidate.substitute_name != null? candidate.substitute_name: '⠀' }}
@@ -200,9 +223,12 @@ export default {
         }
         ,
         getVotingOptions: async function () {
-            let request = await axios.get(route('api.votes.getVoterVotingOptions', {voter: this.voter.id}));
-            this.votingOptions = request.data;
-        },
+    let request = await axios.get(route('api.votes.getVoterVotingOptions', { voter: this.voter.id }));
+    this.votingOptions = request.data;
+
+    console.log('Opciones de votación cargadas:', this.votingOptions); // 👈 Añade esto
+},
+
 
         vote: async function () {
             if (!(this.AllVotingOptionsAreSelected())) {

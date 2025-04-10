@@ -32,10 +32,11 @@ class CandidateController extends Controller
      * Get all candidates for API
      */
     public function index()
-{
-    $candidates = Candidate::with('photo')->get(); 
-    return response($candidates);
-}
+    {
+        $candidates = Candidate::with(['principalPhoto', 'substitutePhoto'])->get(); 
+        return response($candidates);
+    }
+
 
     /**
      * @param StoreCandidateRequest $request
@@ -44,16 +45,22 @@ class CandidateController extends Controller
     public function store(StoreCandidateRequest $request): JsonResponse
     {
         unset($request->id);
-    
-        $candidate = Candidate::create($request->all());
-    
+
+        $candidate = Candidate::create($request->except(['photo', 'substitute_photo']));
+
         if ($request->hasFile('photo')) {
             $path = $request->file('photo')->store('photos', 'public');
-            $candidate->photo()->create(['path' => $path]);
+            $candidate->principalPhoto()->create(['path' => $path, 'type' => 'principal']);
         }
-    
+
+        if ($request->hasFile('substitute_photo')) {
+            $path = $request->file('substitute_photo')->store('photos', 'public');
+            $candidate->substitutePhoto()->create(['path' => $path, 'type' => 'substitute']);
+        }
+
         return response()->json(['message' => 'Candidato creado exitosamente']);
     }
+
     
 
     /**
@@ -61,30 +68,41 @@ class CandidateController extends Controller
      * @param Candidate $candidate
      * @return JsonResponse
      */
-    public function update(UpdateCandidateRequest $request, Candidate $candidate)
+    public function update(UpdateCandidateRequest $request, Candidate $candidate): JsonResponse
     {
-        // Actualizar datos básicos
-        $candidate->update($request->except('photo'));
-    
-        // Verificar si hay una nueva imagen
+        $candidate->update($request->except(['photo', 'substitute_photo']));
+
+        // Foto del principal
         if ($request->hasFile('photo')) {
-            // Si ya tenía una imagen, eliminarla del disco y de la base de datos
-            if ($candidate->photo) {
-                Storage::disk('public')->delete($candidate->photo->path);
-                $candidate->photo->delete();
+            if ($candidate->principalPhoto) {
+                Storage::disk('public')->delete($candidate->principalPhoto->path);
+                $candidate->principalPhoto->delete();
             }
-    
-            // Guardar nueva foto
-            $file = $request->file('photo');
-            $path = $file->store('photos', 'public');
-    
-            $candidate->photo()->create([
-                'path' => $path
+
+            $path = $request->file('photo')->store('photos', 'public');
+            $candidate->principalPhoto()->create([
+                'path' => $path,
+                'type' => 'principal',
             ]);
         }
-    
+
+        // Foto del suplente
+        if ($request->hasFile('substitute_photo')) {
+            if ($candidate->substitutePhoto) {
+                Storage::disk('public')->delete($candidate->substitutePhoto->path);
+                $candidate->substitutePhoto->delete();
+            }
+
+            $path = $request->file('substitute_photo')->store('photos', 'public');
+            $candidate->substitutePhoto()->create([
+                'path' => $path,
+                'type' => 'substitute',
+            ]);
+        }
+
         return response()->json(['message' => 'Candidato actualizado exitosamente']);
     }
+
 
 
     /**
@@ -94,15 +112,20 @@ class CandidateController extends Controller
      */
     public function destroy(DeleteCandidateRequest $request, Candidate $candidate): JsonResponse
     {
-        // Eliminar archivo físico y relación
-        if ($candidate->photo) {
-            Storage::disk('public')->delete($candidate->photo->path); // Elimina imagen del disco
-            $candidate->photo->delete(); // Elimina registro en tabla photos
+        // Foto del principal
+        if ($candidate->principalPhoto) {
+            Storage::disk('public')->delete($candidate->principalPhoto->path);
+            $candidate->principalPhoto->delete();
         }
-    
-        $candidate->delete(); // Elimina el candidato
-    
+
+        // Foto del suplente
+        if ($candidate->substitutePhoto) {
+            Storage::disk('public')->delete($candidate->substitutePhoto->path);
+            $candidate->substitutePhoto->delete();
+        }
+
+        $candidate->delete();
+
         return response()->json(['message' => 'Candidato eliminado exitosamente']);
     }
-
 }

@@ -59,32 +59,34 @@ class Voter extends Model
     }
 
     public function getVotingOptions()
-    {
-        $VotingOptionsQuery = VotingOption::with(['candidates.photo']) 
-            ->where('key', '=', 'faculty')
-            ->where('value', '=', $this->faculty->id)
-            ->orWhere(function ($query) {
-                $query->where('key', '=', 'program')
-                    ->where('value', '=', $this->program->id);
-            })
-            ->orWhere(function ($query) {
-                $query->where('key', '=', 'all');
-            });
-    
-        $secondUser = self::where('identification_number', '=', $this->identification_number)
-            ->where('id', '!=', $this->id)->first();
-    
-        if ($secondUser !== null) {
-            $VotingOptionsQuery->orWhere(function ($query) use ($secondUser) {
-                $query->where('key', '=', 'program')
-                    ->where('value', '=', $secondUser->program->id);
-            })->orWhere(function ($query) {
-                $query->where('key', '=', 'faculty')
-                    ->where('value', '=', $this->faculty->id);
-            });
-        }
-    
-        return $VotingOptionsQuery->get();
+{
+    // Guarda la consulta en la variable
+    $VotingOptionsQuery = VotingOption::with(['candidates.principalPhoto', 'candidates.substitutePhoto'])
+        ->where(function ($query) {
+            $query->where('key', '=', 'faculty')
+                  ->where('value', '=', optional($this->faculty)->id);
+        })
+        ->orWhere(function ($query) {
+            $query->where('key', '=', 'program')
+                  ->where('value', '=', optional($this->program)->id);
+        })
+        ->orWhere('key', 'all');
+
+    // Si existe otro votante con el mismo número de identificación
+    $secondUser = self::where('identification_number', $this->identification_number)
+        ->where('id', '!=', $this->id)
+        ->first();
+
+    if ($secondUser !== null) {
+        $VotingOptionsQuery->orWhere(function ($query) use ($secondUser) {
+            $query->where('key', '=', 'program')
+                  ->where('value', '=', optional($secondUser->program)->id);
+        })->orWhere(function ($query) use ($secondUser) {
+            $query->where('key', '=', 'faculty')
+                  ->where('value', '=', optional($secondUser->faculty)->id);
+        });
     }
-    
+
+    return $VotingOptionsQuery->get();
+}
 }

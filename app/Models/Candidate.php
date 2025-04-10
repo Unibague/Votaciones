@@ -52,10 +52,16 @@ class Candidate extends Model
         return $this->hasMany(Vote::class);
     }
 
-    public function photo()
+    public function principalPhoto()
 {
-    return $this->hasOne(Photo::class);
+    return $this->hasOne(Photo::class)->where('type', 'principal');
 }
+
+public function substitutePhoto()
+{
+    return $this->hasOne(Photo::class)->where('type', 'substitute');
+}
+
 
 }
 

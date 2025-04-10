@@ -94,6 +94,24 @@
                                     ></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
+  <v-file-input
+    v-model="newCandidate.photo"
+    label="Foto del candidato principal"
+    accept="image/*"
+    prepend-icon="mdi-camera"
+    @change="previewImage($event, 'new')"
+  />
+</v-col>
+<v-col cols="12" class="text-center" v-if="previewPhotoNew">
+  <v-img
+    :src="previewPhotoNew"
+    max-height="150"
+    max-width="150"
+    class="mx-auto rounded elevation-2"
+    contain
+  />
+</v-col>
+                                <v-col cols="12">
                                     <h3>Información del candidato suplente</h3>
                                 </v-col>
 
@@ -116,6 +134,24 @@
                                     ></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
+  <v-file-input
+    v-model="newCandidate.substitute_photo"
+    label="Foto del candidato suplente"
+    accept="image/*"
+    prepend-icon="mdi-camera"
+    @change="previewImage($event, 'new_sub')"
+  />
+</v-col>
+<v-col cols="12" class="text-center" v-if="previewPhotoNewSub">
+  <v-img
+    :src="previewPhotoNewSub"
+    max-height="150"
+    max-width="150"
+    class="mx-auto rounded elevation-2"
+    contain
+  />
+</v-col>
+                                <v-col cols="12">
                                     <v-select
                                         color="primario"
                                         v-model="newCandidate.voting_option_id"
@@ -125,24 +161,6 @@
                                         :item-text="(votingOption)=>votingOption.name"
                                     ></v-select>
                                 </v-col>
-                                <v-col cols="12">
-  <v-file-input
-    v-model="newCandidate.photo"
-    label="Foto del candidato principal"
-    accept="image/*"
-    prepend-icon="mdi-camera"
-    @change="previewImage($event, 'new')"
-  />
-</v-col>
-<v-col cols="12" class="text-center" v-if="previewPhotoNew">
-  <v-img
-    :src="previewPhotoNew"
-    max-height="150"
-    max-width="150"
-    class="mx-auto rounded elevation-2"
-    contain
-  />
-</v-col>
 
 
 
@@ -225,6 +243,24 @@
                                     ></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
+  <v-file-input
+    v-model="editedCandidate.photo"
+    label="Foto del candidato principal"
+    accept="image/*"
+    prepend-icon="mdi-camera"
+    @change="previewImage($event, 'edit')"
+  />
+</v-col>
+<v-col cols="12" class="text-center" v-if="previewPhotoEdit">
+  <v-img
+    :src="previewPhotoEdit"
+    max-height="150"
+    max-width="150"
+    class="mx-auto rounded elevation-2"
+    contain
+  />
+</v-col>
+                                <v-col cols="12">
                                     <h3>Información del candidato suplente</h3>
                                 </v-col>
 
@@ -250,6 +286,24 @@
                                     ></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
+  <v-file-input
+    v-model="editedCandidate.substitute_photo"
+    label="Foto del candidato suplente"
+    accept="image/*"
+    prepend-icon="mdi-camera"
+    @change="previewImage($event, 'edit_sub')"
+  />
+</v-col>
+<v-col cols="12" class="text-center" v-if="previewPhotoEditSub">
+  <v-img
+    :src="previewPhotoEditSub"
+    max-height="150"
+    max-width="150"
+    class="mx-auto rounded elevation-2"
+    contain
+  />
+</v-col>
+                                <v-col cols="12">
                                     <v-select
                                         color="primario"
                                         v-model="editedCandidate.voting_option_id"
@@ -259,24 +313,7 @@
                                         :item-text="(votingOption)=>votingOption.name"
                                     ></v-select>
                                 </v-col>
-                                <v-col cols="12">
-  <v-file-input
-    v-model="editedCandidate.photo"
-    label="Foto del candidato principal"
-    accept="image/*"
-    prepend-icon="mdi-camera"
-    @change="previewImage($event, 'edit')"
-  />
-</v-col>
-<v-col cols="12" class="text-center" v-if="previewPhotoEdit">
-  <v-img
-    :src="previewPhotoEdit"
-    max-height="150"
-    max-width="150"
-    class="mx-auto rounded elevation-2"
-    contain
-  />
-</v-col>
+                                
 
 
 
@@ -343,6 +380,7 @@ export default {
             editedCandidate: {
                 id: '',
                 name: '',
+                substitute_photo: null,
             },
             deletedCandidateId: 0,
 
@@ -356,6 +394,9 @@ export default {
             createCandidateDialog: false,
             deleteCandidateDialog: false,
             editCandidateDialog: false,
+            previewPhotoNewSub: null,
+previewPhotoEditSub: null,
+
 
             //Overlays
             isLoading: true,
@@ -379,10 +420,19 @@ previewPhotoEdit: null,
     const reader = new FileReader();
 
     reader.onload = (e) => {
-        if (type === 'new') {
-            this.previewPhotoNew = e.target.result;
-        } else if (type === 'edit') {
-            this.previewPhotoEdit = e.target.result;
+        switch (type) {
+            case 'new':
+                this.previewPhotoNew = e.target.result;
+                break;
+            case 'edit':
+                this.previewPhotoEdit = e.target.result;
+                break;
+            case 'new_sub':
+                this.previewPhotoNewSub = e.target.result;
+                break;
+            case 'edit_sub':
+                this.previewPhotoEditSub = e.target.result;
+                break;
         }
     };
 
@@ -393,12 +443,19 @@ openEditCandidateModal: function (candidate) {
     this.editedCandidate = { ...candidate };
     this.editCandidateDialog = true;
 
-    // Verificar si hay imagen y establecer la previsualización
-    if (candidate.photo && candidate.photo.path) {
-        this.previewPhotoEdit = `/storage/${candidate.photo.path}`;
-        this.editedCandidate.photo = null; // Para que si no elige una nueva, no se reemplace
+    if (candidate.principal_photo && candidate.principal_photo.path) {
+    this.previewPhotoEdit = `/storage/${candidate.principal_photo.path}`;
+    this.editedCandidate.photo = null; 
+} else {
+    this.previewPhotoEdit = null;
+}
+
+
+    if (candidate.substitute_photo && candidate.substitute_photo.path) {
+        this.previewPhotoEditSub = `/storage/${candidate.substitute_photo.path}`;
+        this.editedCandidate.substitute_photo = null;
     } else {
-        this.previewPhotoEdit = null;
+        this.previewPhotoEditSub = null;
     }
 },
 
@@ -420,7 +477,9 @@ editCandidate: async function () {
     if (this.editedCandidate.photo instanceof File)
         formData.append('photo', this.editedCandidate.photo);
 
-    // 👇 Agrega esto para que Laravel sepa que es un PUT
+    if (this.editedCandidate.substitute_photo instanceof File)
+        formData.append('substitute_photo', this.editedCandidate.substitute_photo);
+
     formData.append('_method', 'PUT');
 
     try {
@@ -438,13 +497,14 @@ editCandidate: async function () {
         this.getAllCandidates();
         clearModelProperties(this.editedCandidate);
         this.editedCandidate.photo = undefined;
-
+        this.editedCandidate.substitute_photo = undefined; 
+        this.previewPhotoEdit = null;
+        this.previewPhotoEditSub = null;
     } catch (e) {
         console.log(e.response.data);
         this.snackbar.text = e.response.data.message || 'Error al actualizar candidato';
-this.snackbar.color = 'red'; 
-this.snackbar.status = true;
-
+        this.snackbar.color = 'red';
+        this.snackbar.status = true;
     }
 },
 
@@ -496,6 +556,10 @@ this.snackbar.status = true;
     if (this.newCandidate.photo)
         formData.append('photo', this.newCandidate.photo);
 
+    
+    if (this.newCandidate.substitute_photo)
+        formData.append('substitute_photo', this.newCandidate.substitute_photo);
+
     try {
         const request = await axios.post(route('api.candidates.store'), formData, {
             headers: {
@@ -511,12 +575,12 @@ this.snackbar.status = true;
         this.getAllCandidates();
         this.newCandidate = new Candidate();
         this.previewPhotoNew = null;
+        this.previewPhotoNewSub = null; 
     } catch (e) {
         console.log(e.response.data);
-        this.snackbar.text = e.response.data.message || 'Error al actualizar candidato';
-this.snackbar.color = 'red'; 
-this.snackbar.status = true;
-
+        this.snackbar.text = e.response.data.message || 'Error al crear candidato';
+        this.snackbar.color = 'red';
+        this.snackbar.status = true;
     }
 
 },
