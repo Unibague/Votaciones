@@ -29,7 +29,7 @@ class JuryController extends Controller
     public function index(): \Illuminate\Http\JsonResponse
     {
         $jurorRole = Role::where('name', '=', 'juror')->firstOrFail();
-        $users = $jurorRole->users()->with('table')->get();
+        $users = $jurorRole->users()->with('table')->orderBy('name')->get();
         return response()->json($users);
     }
 

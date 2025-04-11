@@ -33,7 +33,7 @@
                 :loading="isLoading"
                 :headers="headers"
                 :items="programs"
-                :items-per-page="10"
+                :items-per-page="-1"
                 class="elevation-1"
             >
                 <template v-slot:item.actions="{ item }">
