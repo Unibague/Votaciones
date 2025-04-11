@@ -64,21 +64,21 @@
 
                 <v-card>
                     <v-card-title>
-                        <span class="text-h5">Crear nueva facultad</span>
+                        <span class="text-h5">Crear nuevo programa</span>
                     </v-card-title>
                     <v-card-text>
                         <v-container>
                             <v-row>
                                 <v-col cols="12">
                                     <v-text-field
-                                        label="Nombre de la facultad *"
+                                        label="Nombre del programa"
                                         required
                                         v-model="newProgram.name"
                                     ></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
                                     <v-text-field
-                                        label="Código de la facultad *"
+                                        label="Código del programa"
                                         required
                                         v-model="newProgram.code"
                                     ></v-text-field>
@@ -114,7 +114,7 @@
                 @confirmed-dialog="deleteProgram(deletedProgramId)"
             >
                 <template v-slot:title>
-                    Estas a punto de eliminar la facultad seleccionada
+                    Estas a punto de eliminar el programa seleccionado
                 </template>
 
                 ¡Cuidado! esta acción es irreversible
@@ -132,14 +132,14 @@
             >
                 <v-card>
                     <v-card-title>
-                        <span class="text-h5">Editar facultad</span>
+                        <span class="text-h5">Editar programa</span>
                     </v-card-title>
                     <v-card-text>
                         <v-container>
                             <v-row>
                                 <v-col cols="12">
                                     <v-text-field
-                                        label="Nombre de la facultad*"
+                                        label="Nombre del programa"
                                         required
                                         v-model="editedProgram.name"
                                     ></v-text-field>
