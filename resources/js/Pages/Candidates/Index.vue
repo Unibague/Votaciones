@@ -283,7 +283,6 @@
                                 <v-col cols="12">
                                     <v-text-field
                                         label="Nombre del suplente *"
-                                        required
                                         v-model="editedCandidate.substitute_name"
                                     ></v-text-field>
                                 </v-col>
