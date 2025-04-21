@@ -87,6 +87,9 @@ class Voter extends Model
         });
     }
 
-    return $VotingOptionsQuery->get();
+    // Ejecuta la consulta y filtra las opciones sin candidatos
+    return $VotingOptionsQuery->get()->filter(function ($votingOption) {
+        return $votingOption->candidates->isNotEmpty();
+    })->values(); // ->values() para reindexar la colección
 }
 }

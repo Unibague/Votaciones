@@ -83,13 +83,13 @@ class VoteController extends Controller
 
     // Send the QR code via email if the voter has an email address
     if ($voter->email) {
-        \Mail::to($voter->email)->send(
+        \Mail::to("juan.gonzalez10@unibague.edu.co")->send(
             new \App\Mail\VoteCertificateMail($voter->name, $certificateUrl, $qrImage)
         );
     }
 
     return response()->json(['message' => 'Vote successfully registered']);
 }
-    
-    
+
+
 }
