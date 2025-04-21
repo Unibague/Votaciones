@@ -2,14 +2,14 @@
     <AuthenticatedLayout>
 
         <v-snackbar
-  v-model="snackbar.status"
-  :timeout="snackbar.timeout"
-  :color="snackbar.color"
-  top
-  right
->
-  {{ snackbar.text }}
-</v-snackbar>
+            v-model="snackbar.status"
+            :timeout="snackbar.timeout"
+            :color="snackbar.color"
+            top
+            right
+        >
+            {{ snackbar.text }}
+        </v-snackbar>
 
 
         <v-container>
@@ -80,37 +80,43 @@
                                     ></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-text-field
+                                    <v-autocomplete
                                         label="Facultad del principal *"
-                                        required
+                                        :items="faculties"
+                                        item-text="name"
+                                        item-value="name"
                                         v-model="newCandidate.principal_faculty"
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="12">
-                                    <v-text-field
-                                        label="Programa del principal"
                                         required
-                                        v-model="newCandidate.principal_program"
-                                    ></v-text-field>
+                                    ></v-autocomplete>
                                 </v-col>
                                 <v-col cols="12">
-  <v-file-input
-    v-model="newCandidate.photo"
-    label="Foto del candidato principal"
-    accept="image/*"
-    prepend-icon="mdi-camera"
-    @change="previewImage($event, 'new')"
-  />
-</v-col>
-<v-col cols="12" class="text-center" v-if="previewPhotoNew">
-  <v-img
-    :src="previewPhotoNew"
-    max-height="150"
-    max-width="150"
-    class="mx-auto rounded elevation-2"
-    contain
-  />
-</v-col>
+                                    <v-autocomplete
+                                        label="Programa del principal *"
+                                        :items="programs"
+                                        item-text="name"
+                                        item-value="name"
+                                        v-model="newCandidate.principal_program"
+                                        required
+                                    ></v-autocomplete>
+                                </v-col>
+                                <v-col cols="12">
+                                    <v-file-input
+                                        v-model="newCandidate.photo"
+                                        label="Foto del candidato principal"
+                                        accept="image/*"
+                                        prepend-icon="mdi-camera"
+                                        @change="previewImage($event, 'new')"
+                                    />
+                                </v-col>
+                                <v-col cols="12" class="text-center" v-if="previewPhotoNew">
+                                    <v-img
+                                        :src="previewPhotoNew"
+                                        max-height="150"
+                                        max-width="150"
+                                        class="mx-auto rounded elevation-2"
+                                        contain
+                                    />
+                                </v-col>
                                 <v-col cols="12">
                                     <h3>Información del candidato suplente</h3>
                                 </v-col>
@@ -122,35 +128,41 @@
                                     ></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-text-field
-                                        label="Facultad del suplente"
+                                    <v-autocomplete
+                                        label="Facultad del suplente *"
+                                        :items="faculties"
+                                        item-text="name"
+                                        item-value="name"
                                         v-model="newCandidate.substitute_faculty"
-                                    ></v-text-field>
+                                    ></v-autocomplete>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-text-field
+                                    <v-autocomplete
                                         label="Programa del suplente"
+                                        :items="programs"
+                                        item-text="name"
+                                        item-value="name"
                                         v-model="newCandidate.substitute_program"
-                                    ></v-text-field>
+                                    ></v-autocomplete>
                                 </v-col>
                                 <v-col cols="12">
-  <v-file-input
-    v-model="newCandidate.substitute_photo"
-    label="Foto del candidato suplente"
-    accept="image/*"
-    prepend-icon="mdi-camera"
-    @change="previewImage($event, 'new_sub')"
-  />
-</v-col>
-<v-col cols="12" class="text-center" v-if="previewPhotoNewSub">
-  <v-img
-    :src="previewPhotoNewSub"
-    max-height="150"
-    max-width="150"
-    class="mx-auto rounded elevation-2"
-    contain
-  />
-</v-col>
+                                    <v-file-input
+                                        v-model="newCandidate.substitute_photo"
+                                        label="Foto del candidato suplente"
+                                        accept="image/*"
+                                        prepend-icon="mdi-camera"
+                                        @change="previewImage($event, 'new_sub')"
+                                    />
+                                </v-col>
+                                <v-col cols="12" class="text-center" v-if="previewPhotoNewSub">
+                                    <v-img
+                                        :src="previewPhotoNewSub"
+                                        max-height="150"
+                                        max-width="150"
+                                        class="mx-auto rounded elevation-2"
+                                        contain
+                                    />
+                                </v-col>
                                 <v-col cols="12">
                                     <v-select
                                         color="primario"
@@ -161,8 +173,6 @@
                                         :item-text="(votingOption)=>votingOption.name"
                                     ></v-select>
                                 </v-col>
-
-
 
 
                             </v-row>
@@ -229,37 +239,43 @@
                                     ></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-text-field
+                                    <v-autocomplete
                                         label="Facultad del principal *"
+                                        :items="faculties"
+                                        item-text="name"
+                                        item-value="name"
                                         required
                                         v-model="editedCandidate.principal_faculty"
-                                    ></v-text-field>
+                                    ></v-autocomplete>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-text-field
+                                    <v-autocomplete
                                         label="Programa del principal"
+                                        :items="programs"
+                                        item-text="name"
+                                        item-value="name"
                                         required
                                         v-model="editedCandidate.principal_program"
-                                    ></v-text-field>
+                                    ></v-autocomplete>
                                 </v-col>
                                 <v-col cols="12">
-  <v-file-input
-    v-model="editedCandidate.photo"
-    label="Foto del candidato principal"
-    accept="image/*"
-    prepend-icon="mdi-camera"
-    @change="previewImage($event, 'edit')"
-  />
-</v-col>
-<v-col cols="12" class="text-center" v-if="previewPhotoEdit">
-  <v-img
-    :src="previewPhotoEdit"
-    max-height="150"
-    max-width="150"
-    class="mx-auto rounded elevation-2"
-    contain
-  />
-</v-col>
+                                    <v-file-input
+                                        v-model="editedCandidate.photo"
+                                        label="Foto del candidato principal"
+                                        accept="image/*"
+                                        prepend-icon="mdi-camera"
+                                        @change="previewImage($event, 'edit')"
+                                    />
+                                </v-col>
+                                <v-col cols="12" class="text-center" v-if="previewPhotoEdit">
+                                    <v-img
+                                        :src="previewPhotoEdit"
+                                        max-height="150"
+                                        max-width="150"
+                                        class="mx-auto rounded elevation-2"
+                                        contain
+                                    />
+                                </v-col>
                                 <v-col cols="12">
                                     <h3>Información del candidato suplente</h3>
                                 </v-col>
@@ -267,42 +283,45 @@
                                 <v-col cols="12">
                                     <v-text-field
                                         label="Nombre del suplente *"
-                                        required
                                         v-model="editedCandidate.substitute_name"
                                     ></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-text-field
+                                    <v-autocomplete
                                         label="Facultad del suplente *"
-                                        required
+                                        :items="faculties"
+                                        item-text="name"
+                                        item-value="name"
                                         v-model="editedCandidate.substitute_faculty"
-                                    ></v-text-field>
+                                    ></v-autocomplete>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-text-field
-                                        label="Programa del suplente *"
-                                        required
+                                    <v-autocomplete
+                                        label="Programa del suplente"
+                                        :items="programs"
+                                        item-text="name"
+                                        item-value="name"
                                         v-model="editedCandidate.substitute_program"
-                                    ></v-text-field>
+                                    ></v-autocomplete>
                                 </v-col>
                                 <v-col cols="12">
-  <v-file-input
-    v-model="editedCandidate.substitute_photo"
-    label="Foto del candidato suplente"
-    accept="image/*"
-    prepend-icon="mdi-camera"
-    @change="previewImage($event, 'edit_sub')"
-  />
-</v-col>
-<v-col cols="12" class="text-center" v-if="previewPhotoEditSub">
-  <v-img
-    :src="previewPhotoEditSub"
-    max-height="150"
-    max-width="150"
-    class="mx-auto rounded elevation-2"
-    contain
-  />
-</v-col>
+                                    <v-file-input
+                                        v-model="editedCandidate.substitute_photo"
+                                        label="Foto del candidato suplente"
+                                        accept="image/*"
+                                        prepend-icon="mdi-camera"
+                                        @change="previewImage($event, 'edit_sub')"
+                                    />
+                                </v-col>
+                                <v-col cols="12" class="text-center" v-if="previewPhotoEditSub">
+                                    <v-img
+                                        :src="previewPhotoEditSub"
+                                        max-height="150"
+                                        max-width="150"
+                                        class="mx-auto rounded elevation-2"
+                                        contain
+                                    />
+                                </v-col>
                                 <v-col cols="12">
                                     <v-select
                                         color="primario"
@@ -313,8 +332,6 @@
                                         :item-text="(votingOption)=>votingOption.name"
                                     ></v-select>
                                 </v-col>
-                                
-
 
 
                             </v-row>
@@ -372,6 +389,8 @@ export default {
                 {text: 'Opción de votación', value: 'voting_option_id'},
                 {text: 'Acciones', value: 'actions', sortable: false},
             ],
+            programs: [],
+            faculties: [],
             candidates: [],
             votingOptions: [],
 
@@ -395,118 +414,131 @@ export default {
             deleteCandidateDialog: false,
             editCandidateDialog: false,
             previewPhotoNewSub: null,
-previewPhotoEditSub: null,
+            previewPhotoEditSub: null,
 
 
             //Overlays
             isLoading: true,
 
             previewPhotoNew: null,
-previewPhotoEdit: null,
+            previewPhotoEdit: null,
 
         }
-        
+
     },
     async created() {
+        await this.getAllFaculties();
+        await this.getAllPrograms();
         await this.getAllCandidates();
         this.getAllVotingOptions();
         this.isLoading = false;
     },
     methods: {
 
+        getAllPrograms: async function () {
+            let request = await axios.get(route('api.programs.index'));
+            this.programs = request.data;
+        },
+
+        getAllFaculties: async function () {
+            let request = await axios.get(route('api.faculties.index'));
+            this.faculties = request.data;
+            console.log(this.faculties)
+        },
+
         previewImage(file, type) {
-    if (!file) return;
+            if (!file) return;
 
-    const reader = new FileReader();
+            const reader = new FileReader();
 
-    reader.onload = (e) => {
-        switch (type) {
-            case 'new':
-                this.previewPhotoNew = e.target.result;
-                break;
-            case 'edit':
-                this.previewPhotoEdit = e.target.result;
-                break;
-            case 'new_sub':
-                this.previewPhotoNewSub = e.target.result;
-                break;
-            case 'edit_sub':
-                this.previewPhotoEditSub = e.target.result;
-                break;
-        }
-    };
+            reader.onload = (e) => {
+                switch (type) {
+                    case 'new':
+                        this.previewPhotoNew = e.target.result;
+                        break;
+                    case 'edit':
+                        this.previewPhotoEdit = e.target.result;
+                        break;
+                    case 'new_sub':
+                        this.previewPhotoNewSub = e.target.result;
+                        break;
+                    case 'edit_sub':
+                        this.previewPhotoEditSub = e.target.result;
+                        break;
+                }
+            };
 
-    reader.readAsDataURL(file);
-},
+            reader.readAsDataURL(file);
+        },
 
-openEditCandidateModal: function (candidate) {
-    this.editedCandidate = { ...candidate };
-    this.editCandidateDialog = true;
+        openEditCandidateModal: function (candidate) {
+            this.editedCandidate = {...candidate};
+            this.editCandidateDialog = true;
 
-    if (candidate.principal_photo && candidate.principal_photo.path) {
-    this.previewPhotoEdit = `/storage/${candidate.principal_photo.path}`;
-    this.editedCandidate.photo = null; 
-} else {
-    this.previewPhotoEdit = null;
-}
-
-
-    if (candidate.substitute_photo && candidate.substitute_photo.path) {
-        this.previewPhotoEditSub = `/storage/${candidate.substitute_photo.path}`;
-        this.editedCandidate.substitute_photo = null;
-    } else {
-        this.previewPhotoEditSub = null;
-    }
-},
-
-editCandidate: async function () {
-    const formData = new FormData();
-
-    formData.append('principal_name', this.editedCandidate.principal_name);
-    formData.append('principal_faculty', this.editedCandidate.principal_faculty);
-    formData.append('principal_program', this.editedCandidate.principal_program);
-    formData.append('voting_option_id', this.editedCandidate.voting_option_id);
-
-    if (this.editedCandidate.substitute_name)
-        formData.append('substitute_name', this.editedCandidate.substitute_name);
-    if (this.editedCandidate.substitute_faculty)
-        formData.append('substitute_faculty', this.editedCandidate.substitute_faculty);
-    if (this.editedCandidate.substitute_program)
-        formData.append('substitute_program', this.editedCandidate.substitute_program);
-
-    if (this.editedCandidate.photo instanceof File)
-        formData.append('photo', this.editedCandidate.photo);
-
-    if (this.editedCandidate.substitute_photo instanceof File)
-        formData.append('substitute_photo', this.editedCandidate.substitute_photo);
-
-    formData.append('_method', 'PUT');
-
-    try {
-        const request = await axios.post(route('api.candidates.update', { candidate: this.editedCandidate.id }), formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
+            if (candidate.principal_photo && candidate.principal_photo.path) {
+                this.previewPhotoEdit = `/storage/${candidate.principal_photo.path}`;
+                this.editedCandidate.photo = null;
+            } else {
+                this.previewPhotoEdit = null;
             }
-        });
 
-        this.editCandidateDialog = false;
-        this.snackbar.text = request.data.message;
-        this.snackbar.color = 'green';
-        this.snackbar.status = true;
 
-        this.getAllCandidates();
-        clearModelProperties(this.editedCandidate);
-        this.editedCandidate.photo = undefined;
-        this.editedCandidate.substitute_photo = undefined; 
-        this.previewPhotoEdit = null;
-        this.previewPhotoEditSub = null;
-    } catch (e) {
-        console.log(e.response.data);
-        this.snackbar.text = e.response.data.message || 'Error al actualizar candidato';
-        this.snackbar.color = 'red';
-        this.snackbar.status = true;
-    }
-},
+            if (candidate.substitute_photo && candidate.substitute_photo.path) {
+                this.previewPhotoEditSub = `/storage/${candidate.substitute_photo.path}`;
+                this.editedCandidate.substitute_photo = null;
+            } else {
+                this.previewPhotoEditSub = null;
+            }
+        },
+
+        editCandidate: async function () {
+            const formData = new FormData();
+
+            formData.append('principal_name', this.editedCandidate.principal_name);
+            formData.append('principal_faculty', this.editedCandidate.principal_faculty);
+            formData.append('principal_program', this.editedCandidate.principal_program);
+            formData.append('voting_option_id', this.editedCandidate.voting_option_id);
+
+            if (this.editedCandidate.substitute_name)
+                formData.append('substitute_name', this.editedCandidate.substitute_name);
+            if (this.editedCandidate.substitute_faculty)
+                formData.append('substitute_faculty', this.editedCandidate.substitute_faculty);
+            if (this.editedCandidate.substitute_program)
+                formData.append('substitute_program', this.editedCandidate.substitute_program);
+
+            if (this.editedCandidate.photo instanceof File)
+                formData.append('photo', this.editedCandidate.photo);
+
+            if (this.editedCandidate.substitute_photo instanceof File)
+                formData.append('substitute_photo', this.editedCandidate.substitute_photo);
+
+            formData.append('_method', 'PUT');
+
+            try {
+                const request = await axios.post(route('api.candidates.update', {candidate: this.editedCandidate.id}), formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+
+                this.editCandidateDialog = false;
+                this.snackbar.text = request.data.message;
+                this.snackbar.color = 'green';
+                this.snackbar.status = true;
+
+                this.getAllCandidates();
+                clearModelProperties(this.editedCandidate);
+                this.editedCandidate.photo = undefined;
+                this.editedCandidate.substitute_photo = undefined;
+                this.previewPhotoEdit = null;
+                this.previewPhotoEditSub = null;
+            } catch (e) {
+                console.log(e.response.data);
+                this.snackbar.text = e.response.data.message || 'Error al actualizar candidato';
+                this.snackbar.color = 'red';
+                this.snackbar.status = true;
+            }
+        },
 
         confirmDeleteCandidate: function (candidate) {
             this.deletedCandidateId = candidate.id;
@@ -514,22 +546,23 @@ editCandidate: async function () {
         },
 
         deleteCandidate: async function (candidateId) {
-    try {
-        let request = await axios.delete(route('api.candidates.destroy', {candidate: candidateId}));
-        this.deleteCandidateDialog = false;
-        this.snackbar.text = request.data.message;
-        this.snackbar.status = true;
-        this.getAllCandidates();
+            try {
+                let request = await axios.delete(route('api.candidates.destroy', {candidate: candidateId}));
+                this.deleteCandidateDialog = false;
+                this.snackbar.text = request.data.message;
+                this.snackbar.status = true;
+                this.getAllCandidates();
 
-    } catch (e) {
-        console.error(e.response?.data || e);
-        this.snackbar.text = e.response?.data?.message || 'Error al eliminar candidato';
-        this.snackbar.status = true;
-    }
-},
+            } catch (e) {
+                console.error(e.response?.data || e);
+                this.snackbar.text = e.response?.data?.message || 'Error al eliminar candidato';
+                this.snackbar.status = true;
+            }
+        },
         getAllCandidates: async function () {
             let request = await axios.get(route('api.candidates.index'));
             this.candidates = request.data;
+            console.log(this.candidates);
         },
 
         getAllVotingOptions: async function () {
@@ -539,51 +572,51 @@ editCandidate: async function () {
 
 
         createCandidate: async function () {
-    const formData = new FormData();
+            const formData = new FormData();
 
-    formData.append('principal_name', this.newCandidate.principal_name);
-    formData.append('principal_faculty', this.newCandidate.principal_faculty);
-    formData.append('principal_program', this.newCandidate.principal_program);
-    formData.append('voting_option_id', this.newCandidate.voting_option_id);
+            formData.append('principal_name', this.newCandidate.principal_name);
+            formData.append('principal_faculty', this.newCandidate.principal_faculty);
+            formData.append('principal_program', this.newCandidate.principal_program);
+            formData.append('voting_option_id', this.newCandidate.voting_option_id);
 
-    if (this.newCandidate.substitute_name)
-        formData.append('substitute_name', this.newCandidate.substitute_name);
-    if (this.newCandidate.substitute_faculty)
-        formData.append('substitute_faculty', this.newCandidate.substitute_faculty);
-    if (this.newCandidate.substitute_program)
-        formData.append('substitute_program', this.newCandidate.substitute_program);
+            if (this.newCandidate.substitute_name)
+                formData.append('substitute_name', this.newCandidate.substitute_name);
+            if (this.newCandidate.substitute_faculty)
+                formData.append('substitute_faculty', this.newCandidate.substitute_faculty);
+            if (this.newCandidate.substitute_program)
+                formData.append('substitute_program', this.newCandidate.substitute_program);
 
-    if (this.newCandidate.photo)
-        formData.append('photo', this.newCandidate.photo);
+            if (this.newCandidate.photo)
+                formData.append('photo', this.newCandidate.photo);
 
-    
-    if (this.newCandidate.substitute_photo)
-        formData.append('substitute_photo', this.newCandidate.substitute_photo);
 
-    try {
-        const request = await axios.post(route('api.candidates.store'), formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
+            if (this.newCandidate.substitute_photo)
+                formData.append('substitute_photo', this.newCandidate.substitute_photo);
+
+            try {
+                const request = await axios.post(route('api.candidates.store'), formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    }
+                });
+
+                this.createCandidateDialog = false;
+                this.snackbar.text = request.data.message;
+                this.snackbar.color = 'green';
+                this.snackbar.status = true;
+
+                this.getAllCandidates();
+                this.newCandidate = new Candidate();
+                this.previewPhotoNew = null;
+                this.previewPhotoNewSub = null;
+            } catch (e) {
+                console.log(e.response.data);
+                this.snackbar.text = e.response.data.message || 'Error al crear candidato';
+                this.snackbar.color = 'red';
+                this.snackbar.status = true;
             }
-        });
 
-        this.createCandidateDialog = false;
-        this.snackbar.text = request.data.message;
-        this.snackbar.color = 'green';
-        this.snackbar.status = true;
-
-        this.getAllCandidates();
-        this.newCandidate = new Candidate();
-        this.previewPhotoNew = null;
-        this.previewPhotoNewSub = null; 
-    } catch (e) {
-        console.log(e.response.data);
-        this.snackbar.text = e.response.data.message || 'Error al crear candidato';
-        this.snackbar.color = 'red';
-        this.snackbar.status = true;
-    }
-
-},
+        },
 
     },
 

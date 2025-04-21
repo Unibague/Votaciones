@@ -13,7 +13,7 @@ class ApiUserController extends Controller
 {
     public function index(GetAllUsersRequest $request)
     {
-        return User::with('role')->get();
+        return User::with('role')->orderBy('name')->get();
     }
 
     public function getUserRole()

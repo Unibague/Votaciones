@@ -23,4 +23,14 @@ const clearModelProperties = (model, setNull = false) => {
         model[modelKey] = setNull === true ? null : '';
     }
 }
-export {prepareErrorText, checkIfModelHasEmptyProperties, clearModelProperties}
+
+const showSnackbar = (snackbar, text, type = 'success', timeout = 3000) => {
+
+    snackbar.type = type;
+    snackbar.timeout = timeout;
+    snackbar.status = true;
+    snackbar.text = text;
+}
+
+
+export {prepareErrorText, checkIfModelHasEmptyProperties, clearModelProperties, showSnackbar}

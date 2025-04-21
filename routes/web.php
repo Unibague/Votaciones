@@ -72,6 +72,19 @@ Route::get('/candidates', [\App\Http\Controllers\CandidateController::class, 'in
 
 /*
 |--------------------------------------------------------------------------
+| Voters
+|--------------------------------------------------------------------------
+*/
+
+Route::apiResource('api/voters', \App\Http\Controllers\VoterController::class, [
+    'as' => 'api'
+])->middleware('auth');
+Route::get('/voters', [\App\Http\Controllers\VoterController::class, 'indexView'])->middleware(['auth', 'isAdmin'])->name('voters.index');
+Route::get('/voters/show', [\App\Http\Controllers\VoterController::class, 'indexShow'])->middleware(['auth', 'isAdmin'])->name('voters.show');
+
+
+/*
+|--------------------------------------------------------------------------
 | Votes
 |--------------------------------------------------------------------------
 */
@@ -172,14 +185,13 @@ Route::get('/certificate/{token}', [\App\Http\Controllers\VoteCertificateControl
     use App\Models\Vote;
 
     Route::get('/test-email', function () {
-        $vote = Vote::latest()->first(); 
+        $vote = Vote::latest()->first();
         $name = $vote->voter->name;
         $token = $vote->certificate_token;
         $certificateUrl = route('votes.certificate', ['token' => $token]);
         $qr = 'data:image/png;base64,' . base64_encode(QrCode::format('png')->size(200)->generate($certificateUrl));
-    
+
         Mail::to('practicantes.g3@unibague.edu.co')->send(new VoteCertificateMail($name, $certificateUrl, $qr));
-    
+
         return 'Correo enviado con éxito ';
     });
-    

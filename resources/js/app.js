@@ -7,6 +7,7 @@ import PortalVue from 'portal-vue';
 //Vuetify config
 import Vuetify from 'vuetify';
 import 'vuetify/dist/vuetify.min.css';
+import es from 'vuetify/es5/locale/es'; // 👈 Importa el idioma español
 Vue.use(Vuetify)
 
 Vue.mixin({ methods: { route } });
@@ -16,8 +17,16 @@ Vue.use(PortalVue);
 
 const app = document.getElementById('app');
 
+// 👇 Aquí defines la instancia de Vuetify con el idioma
+const vuetify = new Vuetify({
+    lang: {
+        locales: { es },
+        current: 'es',
+    },
+});
+
 new Vue({
-    vuetify: new Vuetify(),
+    vuetify, // 👈 Pasa la instancia personalizada aquí
     render: (h) =>
         h(InertiaApp, {
             props: {

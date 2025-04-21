@@ -193,7 +193,12 @@ export default {
                         role: 3,
                         icon: 'mdi-calendar'
                     },
-
+                    {
+                        name: 'Cargue de Votantes',
+                        routeName: 'voters.index',
+                        role: 3,
+                        icon: 'mdi-calendar'
+                    },
                     {
                         name: 'Resultados generales',
                         routeName: 'tables.index',
@@ -222,7 +227,6 @@ export default {
                         role: 3,
                         icon: 'mdi-account-cog'
                     },
-
                     {
                         name: 'Facultades',
                         routeName: 'faculties.index',
@@ -235,8 +239,12 @@ export default {
                         role: 3,
                         icon: 'mdi-calendar'
                     },
-
-
+                    {
+                        name: 'Votantes',
+                        routeName: 'voters.show',
+                        role: 3,
+                        icon: 'mdi-calendar'
+                    },
                 ]
 
             },

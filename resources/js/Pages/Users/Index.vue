@@ -17,13 +17,23 @@
                 <h2 class="align-self-start">Gestionar usuarios</h2>
             </div>
 
+            <v-text-field
+                v-model="search"
+                append-icon="mdi-magnify"
+                label="Buscar usuario"
+                single-line
+                hide-details
+                dense
+            />
+
             <!--Inicia tabla-->
             <v-data-table
                 loading-text="Cargando, por favor espere..."
                 :loading="isLoading"
                 :headers="headers"
                 :items="users"
-                :items-per-page="5"
+                :search="search"
+                :items-per-page="-1"
                 class="elevation-1"
             >
                 <template v-slot:item.actions="{ item }">
@@ -126,6 +136,7 @@ export default {
             ],
             users: [],
             roles: [],
+            search: '',
             //Snackbars
             snackbar: {
                 text: '...',

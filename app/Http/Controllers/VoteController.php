@@ -79,6 +79,7 @@ class VoteController extends Controller
 
     
     if ($voter->email) {
+
         \Mail::to($voter->email)->send(
             new \App\Mail\VoteCertificateMail($voter->name)
         );
@@ -87,6 +88,6 @@ class VoteController extends Controller
 
     return response()->json(['message' => 'Vote successfully registered']);
 }
-    
-    
+
+
 }

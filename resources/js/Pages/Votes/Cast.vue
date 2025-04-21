@@ -18,53 +18,62 @@
                         <vue-glow color="#1e3a62" mode="hex" elevation="20"
                                   :intensity="votingOption.selectedCandidateId === candidate.id ? 2.5:0">
                             <v-card outlined>
+
                                 <v-card-text class="d-flex justify-space-around align-center">
-  <!-- Foto candidato principal -->
-  <div class="text-center">
-    <v-avatar size="120" class="mb-2">
-        <v-img
-  v-if=" candidate.principal_photo &&  candidate.principal_photo.path"
-  :src="`/storage/${ candidate.principal_photo.path}`"
-  alt="Foto principal"
-  cover
-        @error="() => console.log('Error al cargar imagen principal')"
-      />
-      <v-icon v-else large>mdi-account-circle</v-icon>
-    </v-avatar>
-  </div>
-
-</v-card-text>
-
+                                    <!-- Foto candidato principal -->
+                                    <div class="text-center">
+                                        <template v-if="candidate.principal_photo && candidate.principal_photo.path">
+                                            <v-img
+                                                :src="`/storage/${candidate.principal_photo.path}`"
+                                                alt="Foto principal"
+                                                max-width="225"
+                                                max-height="225"
+                                                class="mb-2 rounded"
+                                                contain
+                                                @error="() => console.log('Error al cargar imagen principal')"
+                                            />
+                                        </template>
+                                        <template v-else>
+                                            <v-avatar size="225" class="mb-2">
+                                                <v-icon class="display-4" large>mdi-account-circle</v-icon>
+                                            </v-avatar>
+                                        </template>
+                                    </div>
+                                </v-card-text>
 
                                 <v-card-title>
-                                <span class="text-truncate">
-                                   {{ candidate.principal_name }}
-                                </span>
+  <span class="text-truncate">
+    {{ candidate.principal_name }}
+  </span>
                                 </v-card-title>
+
                                 <v-card-subtitle>
-                                    Facultad {{ candidate.principal_faculty }} | Programa {{
-                                        candidate.principal_program
-                                    }}
+                                    Facultad {{ candidate.principal_faculty }} | Programa {{ candidate.principal_program }}
                                 </v-card-subtitle>
-                               <!-- Foto candidato suplente -->
-                               <v-card-text class="d-flex justify-space-around align-center">
 
-                               <div class="text-center">
-    <v-avatar size="120" class="mb-2">
-      <v-img
-  v-if="candidate.substitute_photo && candidate.substitute_photo.path"
-  :src="`/storage/${candidate.substitute_photo.path}`"
+                                <!-- Foto candidato suplente -->
+                                <v-card-text class="d-flex justify-space-around align-center">
+                                    <div class="text-center">
+                                        <template v-if="candidate.substitute_photo && candidate.substitute_photo.path">
+                                            <v-img
+                                                :src="`/storage/${candidate.substitute_photo.path}`"
+                                                alt="Foto suplente"
+                                                max-width="225"
+                                                max-height="225"
+                                                class="mb-2 rounded"
+                                                contain
+                                                @error="() => console.log('Error al cargar imagen suplente')"
+                                            />
+                                        </template>
+                                        <template v-else>
+                                            <v-avatar size="225" class="mb-2">
+                                                <v-icon class="display-4" large>mdi-account-circle</v-icon>
+                                            </v-avatar>
+                                        </template>
+                                    </div>
+                                </v-card-text>
 
-        alt="Foto suplente"
-        cover
-        @error="() => console.log('Error al cargar imagen suplente')"
-      />
-      <v-icon v-else large>mdi-account-circle</v-icon>
-    </v-avatar>
-  </div>
 
-</v-card-text>
-  
                                 <v-card-title style="padding-top: 0">
                                      <span class="text-truncate">
                                     {{ candidate.substitute_name != null? candidate.substitute_name: '⠀' }}
