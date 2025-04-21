@@ -20,6 +20,7 @@
         "laravel/socialite": "^5.5",
         "laravel/tinker": "^2.0",
         "simplesoftwareio/simple-qrcode": "^4.2",
+        "spatie/browsershot": "^3.61",
         "tightenco/ziggy": "^1.0"
     },
     "require-dev": {

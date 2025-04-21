@@ -15,7 +15,6 @@ use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Mail\VoteCertificateMail;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class VoteController extends Controller
 {
@@ -48,7 +47,7 @@ class VoteController extends Controller
     }
 
     /**
-     * Store the vote and send QR certificate via email.
+     * Store the vote.
      */
     public function store(StoreVoteRequest $request): JsonResponse
 {
@@ -78,15 +77,13 @@ class VoteController extends Controller
     // Generate the URL to the vote certificate
     $certificateUrl = route('votes.certificate', ['token' => $token]);
 
-    // Generate the QR code in memory (not saved to disk)
-    $qrImage = \QrCode::format('png')->size(200)->generate($certificateUrl);
-
-    // Send the QR code via email if the voter has an email address
+    
     if ($voter->email) {
         \Mail::to($voter->email)->send(
-            new \App\Mail\VoteCertificateMail($voter->name, $certificateUrl, $qrImage)
+            new \App\Mail\VoteCertificateMail($voter->name)
         );
     }
+    
 
     return response()->json(['message' => 'Vote successfully registered']);
 }
