@@ -33,7 +33,9 @@ class CandidateController extends Controller
      */
     public function index()
     {
-        $candidates = Candidate::with(['principalPhoto', 'substitutePhoto'])->get(); 
+        $candidates = Candidate::with(['principalPhoto', 'substitutePhoto',
+            'votingOption:id,name' // Solo traer id y name del voting option
+        ])->get();
         return response($candidates);
     }
 
@@ -61,7 +63,7 @@ class CandidateController extends Controller
         return response()->json(['message' => 'Candidato creado exitosamente']);
     }
 
-    
+
 
     /**
      * @param UpdateVotingOptionRequest $request

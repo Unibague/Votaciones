@@ -386,7 +386,7 @@ export default {
                 {text: 'Nombre del suplente', value: 'substitute_name'},
                 {text: 'Facultad del suplente', value: 'substitute_faculty'},
                 {text: 'Programa del suplente', value: 'substitute_program'},
-                {text: 'Opción de votación', value: 'voting_option_id'},
+                {text: 'Opción de votación', value: 'voting_option.name'},
                 {text: 'Acciones', value: 'actions', sortable: false},
             ],
             programs: [],

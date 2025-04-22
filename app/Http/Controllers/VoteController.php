@@ -77,14 +77,13 @@ class VoteController extends Controller
     // Generate the URL to the vote certificate
     $certificateUrl = route('votes.certificate', ['token' => $token]);
 
-    
     if ($voter->email) {
 
         \Mail::to($voter->email)->send(
             new \App\Mail\VoteCertificateMail($voter->name)
         );
     }
-    
+
 
     return response()->json(['message' => 'Vote successfully registered']);
 }

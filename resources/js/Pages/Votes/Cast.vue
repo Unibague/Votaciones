@@ -42,49 +42,55 @@
                                 </v-card-text>
 
                                 <v-card-title>
-  <span class="text-truncate">
-    {{ candidate.principal_name }}
-  </span>
+                                  <span class="text-truncate">
+                                    {{ candidate.principal_name }}
+                                  </span>
                                 </v-card-title>
 
                                 <v-card-subtitle>
-                                    Facultad {{ candidate.principal_faculty }} | Programa {{ candidate.principal_program }}
-                                </v-card-subtitle>
-
-                                <!-- Foto candidato suplente -->
-                                <v-card-text class="d-flex justify-space-around align-center">
-                                    <div class="text-center">
-                                        <template v-if="candidate.substitute_photo && candidate.substitute_photo.path">
-                                            <v-img
-                                                :src="`/storage/${candidate.substitute_photo.path}`"
-                                                alt="Foto suplente"
-                                                max-width="225"
-                                                max-height="225"
-                                                class="mb-2 rounded"
-                                                contain
-                                                @error="() => console.log('Error al cargar imagen suplente')"
-                                            />
-                                        </template>
-                                        <template v-else>
-                                            <v-avatar size="225" class="mb-2">
-                                                <v-icon class="display-4" large>mdi-account-circle</v-icon>
-                                            </v-avatar>
-                                        </template>
-                                    </div>
-                                </v-card-text>
-
-
-                                <v-card-title style="padding-top: 0">
-                                     <span class="text-truncate">
-                                    {{ candidate.substitute_name != null? candidate.substitute_name: '⠀' }}
-                                    </span>
-                                </v-card-title>
-                                <v-card-subtitle>
-                                    {{
-                                        candidate.substitute_faculty != null && candidate.substitute_program != null ?
-                                            `Facultad ${candidate.substitute_faculty} | Programa ${candidate.substitute_program}` : '⠀'
+                                    Facultad {{ candidate.principal_faculty }} | Programa {{
+                                        candidate.principal_program
                                     }}
                                 </v-card-subtitle>
+
+                                <!-- Candidato suplente: Solo mostrar si hay información -->
+                                <template
+                                    v-if="candidate.substitute_name || (candidate.substitute_photo && candidate.substitute_photo.path)">
+                                    <!-- Foto candidato suplente -->
+                                    <v-card-text class="d-flex justify-space-around align-center">
+                                        <div class="text-center">
+                                            <template
+                                                v-if="candidate.substitute_photo && candidate.substitute_photo.path">
+                                                <v-img
+                                                    :src="`/storage/${candidate.substitute_photo.path}`"
+                                                    alt="Foto suplente"
+                                                    max-width="225"
+                                                    max-height="225"
+                                                    class="mb-2 rounded"
+                                                    contain
+                                                    @error="() => console.log('Error al cargar imagen suplente')"
+                                                />
+                                            </template>
+                                            <template v-else>
+                                                <v-avatar size="225" class="mb-2">
+                                                    <v-icon class="display-4" large>mdi-account-circle</v-icon>
+                                                </v-avatar>
+                                            </template>
+                                        </div>
+                                    </v-card-text>
+
+                                    <v-card-title style="padding-top: 0">
+        <span class="text-truncate">
+            {{ candidate.substitute_name }}
+        </span>
+                                    </v-card-title>
+
+                                    <v-card-subtitle>
+                                        Facultad {{ candidate.substitute_faculty }} | Programa
+                                        {{ candidate.substitute_program }}
+                                    </v-card-subtitle>
+                                </template>
+
                                 <v-card-actions class="d-flex justify-center mb-2">
                                     <v-btn
                                         @click="selectCandidate(votingOption,candidate.id)"
@@ -147,6 +153,7 @@
             <div class="d-flex justify-center mt-12" v-if="!isLoading">
                 <v-btn
                     @click="vote"
+                    :disabled="isVoting"
                     color="primario"
                     large
                     class="grey--text text--lighten-4">
@@ -203,6 +210,7 @@ export default {
         return {
             isLoading: true,
             votingOptions: [],
+            isVoting: false,
 
             //Snackbars
             snackbar: {
@@ -232,17 +240,21 @@ export default {
         }
         ,
         getVotingOptions: async function () {
-    let request = await axios.get(route('api.votes.getVoterVotingOptions', { voter: this.voter.id }));
-    this.votingOptions = request.data;
+            let request = await axios.get(route('api.votes.getVoterVotingOptions', {voter: this.voter.id}));
+            this.votingOptions = request.data;
 
-    console.log('Opciones de votación cargadas:', this.votingOptions); // 👈 Añade esto
-},
+            console.log('Opciones de votación cargadas:', this.votingOptions); // 👈 Añade esto
+        },
 
 
         vote: async function () {
             if (!(this.AllVotingOptionsAreSelected())) {
                 return;
             }
+
+
+            this.isVoting = true;
+
             let data = [];
 
             //Iterate over all voting options, get the selected value.
@@ -261,6 +273,8 @@ export default {
                 this.snackbar.text = e.response.data.message;
                 this.snackbar.status = true;
             }
+
+            this.isVoting = false;
 
         },
 
