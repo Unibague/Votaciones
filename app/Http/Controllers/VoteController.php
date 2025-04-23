@@ -15,6 +15,7 @@ use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Mail\VoteCertificateMail;
+use Spatie\Browsershot\Browsershot;
 
 class VoteController extends Controller
 {
@@ -74,19 +75,30 @@ class VoteController extends Controller
         ]);
     }
 
-    // Generate the URL to the vote certificate
-    $certificateUrl = route('votes.certificate', ['token' => $token]);
+    $html = view('certificate.certificate-image', [
+        'voter' => $voter,
+        'voted_at' => now()->format('d/m/Y H:i')
+    ])->render();
 
+    // 6. Generar imagen como base64 y decodificarla
+    $imageBase64 = Browsershot::html($html)
+        ->format('png')
+        ->windowSize(800, 600)
+        ->deviceScaleFactor(2)
+        ->waitUntilNetworkIdle()
+        ->setOption('args', ['--no-sandbox'])
+        ->base64Screenshot();
+
+    $imageBinary = base64_decode($imageBase64);
+
+    // 7. Enviar correo si tiene email
     if ($voter->email) {
-
-        \Mail::to($voter->email)->send(
-            new \App\Mail\VoteCertificateMail($voter->name)
+        Mail::to($voter->email)->send(
+            (new VoteCertificateMail($voter->name))
+                ->withImage($imageBinary)
         );
     }
 
-
-    return response()->json(['message' => 'Vote successfully registered']);
+    return response()->json(['message' => 'Voto registrado exitosamente.']);
 }
-
-
 }
