@@ -15,7 +15,7 @@ use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Mail\VoteCertificateMail;
-use Spatie\Browsershot\Browsershot;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class VoteController extends Controller
 {
@@ -75,27 +75,31 @@ class VoteController extends Controller
         ]);
     }
 
+    // Generar la vista como HTML
     $html = view('certificate.certificate-image', [
         'voter' => $voter,
         'voted_at' => now()->format('d/m/Y H:i')
     ])->render();
 
-    // 6. Generar imagen como base64 y decodificarla
-    $imageBase64 = Browsershot::html($html)
-        ->format('png')
-        ->windowSize(800, 600)
-        ->deviceScaleFactor(2)
-        ->waitUntilNetworkIdle()
-        ->setOption('args', ['--no-sandbox'])
-        ->base64Screenshot();
+    // Convertir HTML a imagen usando Browsershot o una alternativa similar
+    // Aquí asumimos que tienes una manera de convertir HTML a imagen (PNG)
+    // Puedes usar Browsershot o una librería similar para esto
+    $pdf = Pdf::loadView('certificate.certificate-image', [
+        'voter' => $voter,
+        'voted_at' => now()->format('d/m/Y H:i')
+    ]);
 
-    $imageBinary = base64_decode($imageBase64);
+    // Convertir PDF a imagen (dependiendo de tu entorno, podrías necesitar Imagick)
+    $imagick = new \Imagick();
+    $imagick->readImageBlob($pdf->output());
+    $imagick->setIteratorIndex(0);
+    $imagick->setImageFormat('png');
+    $imageData = $imagick->getImageBlob();
 
-    // 7. Enviar correo si tiene email
     if ($voter->email) {
         Mail::to($voter->email)->send(
             (new VoteCertificateMail($voter->name))
-                ->withImage($imageBinary)
+                ->withImage($imageData) // Usar el método withImage que ya tienes definido
         );
     }
 

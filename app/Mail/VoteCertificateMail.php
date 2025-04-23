@@ -3,13 +3,12 @@
 namespace App\Mail;
 
 use Illuminate\Mail\Mailable;
-use Illuminate\Support\Str;
 
 class VoteCertificateMail extends Mailable
 {
     public $name;
     public $cid;
-    public $imageData;
+    protected $imageData;
 
     public function __construct($name)
     {
@@ -24,13 +23,12 @@ class VoteCertificateMail extends Mailable
 
     public function build()
     {
-        // ✅ Generamos un Content-ID manual para usar en el <img src="cid:...">
-        $this->cid = Str::uuid() . '@certificado';
+        $cid = uniqid() . '@certificado';
 
         return $this->view('emails.vote-certificate')
             ->with([
                 'name' => $this->name,
-                'cid' => $this->cid,
+                'cid' => $cid,
             ])
             ->attachData(
                 $this->imageData,
@@ -38,10 +36,11 @@ class VoteCertificateMail extends Mailable
                 [
                     'as' => 'certificado-votacion.png',
                     'mime' => 'image/png',
-                    'content_id' => $this->cid, // 👈🏻 CID manual
-                    'disposition' => 'inline',  // 👈🏻 Mostrar en el cuerpo
+                    'content_id' => $cid,  // 👈🏼 Esto es lo importante
+                    'disposition' => 'inline', // 👈🏼 Así se incrusta y no como adjunto
                 ]
             )
             ->subject('Certificado de votación');
     }
+
 }
