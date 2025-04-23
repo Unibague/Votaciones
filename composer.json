@@ -21,7 +21,7 @@
         "laravel/tinker": "^2.0",
         "maatwebsite/excel": "3.1.40",
         "simplesoftwareio/simple-qrcode": "^4.2",
-        "spatie/browsershot": "^3.61",
+        "spatie/browsershot": "^3.50",
         "tightenco/ziggy": "^1.0"
     },
     "require-dev": {
