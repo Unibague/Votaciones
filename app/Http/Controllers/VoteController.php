@@ -75,31 +75,17 @@ class VoteController extends Controller
         ]);
     }
 
-    // Generar la vista como HTML
-    $html = view('certificate.certificate-image', [
-        'voter' => $voter,
-        'voted_at' => now()->format('d/m/Y H:i')
-    ])->render();
-
-    // Convertir HTML a imagen usando Browsershot o una alternativa similar
-    // Aquí asumimos que tienes una manera de convertir HTML a imagen (PNG)
-    // Puedes usar Browsershot o una librería similar para esto
     $pdf = Pdf::loadView('certificate.certificate-image', [
         'voter' => $voter,
         'voted_at' => now()->format('d/m/Y H:i')
     ]);
 
-    // Convertir PDF a imagen (dependiendo de tu entorno, podrías necesitar Imagick)
-    $imagick = new \Imagick();
-    $imagick->readImageBlob($pdf->output());
-    $imagick->setIteratorIndex(0);
-    $imagick->setImageFormat('png');
-    $imageData = $imagick->getImageBlob();
+    $binaryPdf = $pdf->output();
 
     if ($voter->email) {
         Mail::to($voter->email)->send(
             (new VoteCertificateMail($voter->name))
-                ->withImage($imageData) // Usar el método withImage que ya tienes definido
+                ->attachData($binaryPdf, 'certificado.pdf')
         );
     }
 
