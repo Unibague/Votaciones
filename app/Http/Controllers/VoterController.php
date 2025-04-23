@@ -38,12 +38,22 @@ class VoterController extends Controller
 
     public function searchByIdentificationNumber(SearchVoterByIdentificationNumberRequest $request)
     {
-        $voter = Voter::with(['faculty', 'program'])->where('identification_number', $request->input('identification_number'))
-            ->firstOrFail();
 
-        if ($voter->faculty_code !== auth()->user()->table->faculty_code) {
+        $voters = Voter::with(['faculty', 'program'])
+            ->where('identification_number', $request->input('identification_number'))
+            ->get();
+
+        if ($voters->isEmpty()) {
+            return response()->json(['message' => 'Votante no encontrado'], 404);
+        }
+
+        // Buscar el votante que corresponde a la mesa (faculty_code del usuario autenticado es decir el jurado)
+        $voter = $voters->firstWhere('faculty_code', auth()->user()->table->faculty_code);
+
+        if (!$voter) {
             return response()->json(['message' => 'El usuario no está autorizado para votar en esta mesa'], 403);
         }
+
         //Check if already voted
         if ($voter->hasVoted()) {
             return response()->json(['message' => 'El usuario ya ha votado'], 403);
