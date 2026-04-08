@@ -93,6 +93,31 @@
 
     @endif
 
+    <br><br>
+
+<table style="width: 100%; border: none;">
+    <tr>
+        <td style="width: 45%; text-align: center; border: none;">
+            <hr style="border: 1px solid #000;">
+            <strong>Firma Jurado 1</strong><br>
+            Nombre:<br>
+            Documento:
+        </td>
+
+        <td style="width: 10%; border: none;"></td>
+
+        <td style="width: 45%; text-align: center; border: none;">
+            <hr style="border: 1px solid #000;">
+            <strong>Firma Jurado 2</strong><br>
+            Nombre:<br>
+            Documento:
+        </td>
+    </tr>
+</table>
+
+<br>
+
+
     <p>
         Este reporte ha sido generado por el Sistema de Votaciones el {{new \Carbon\Carbon()}}.
     </p>

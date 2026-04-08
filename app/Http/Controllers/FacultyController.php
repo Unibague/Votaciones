@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\DeleteFacultyRequest;
 use App\Models\Faculty;
 use App\Http\Requests\StoreFacultyRequest;
+use App\Models\Table;
+use App\Models\Voter;
 use App\Http\Requests\UpdateFacultyRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class FacultyController extends Controller
@@ -67,7 +70,12 @@ class FacultyController extends Controller
      */
     public function destroy(DeleteFacultyRequest $request, Faculty $faculty)
     {
-        $faculty->delete();
+        DB::transaction(function () use ($faculty) {
+            Voter::where('faculty_code', $faculty->code)->update(['faculty_code' => null]);
+            Table::where('faculty_code', $faculty->code)->update(['faculty_code' => null]);
+            $faculty->delete();
+        });
+
         return response()->json(['message' => 'Facultad eliminada exitosamente']);
     }
 }

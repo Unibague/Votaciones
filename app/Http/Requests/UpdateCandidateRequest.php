@@ -23,7 +23,8 @@ class UpdateCandidateRequest extends FormRequest
             'substitute_faculty' => 'nullable|string',
             'substitute_program' => 'nullable|string',
 
-            'photo' => 'nullable|image|max:2048'
+            'photo' => 'nullable|image',
+            'substitute_photo' => 'nullable|image'
         ];
     }
 }

@@ -35,7 +35,8 @@ class StoreCandidateRequest extends FormRequest
             'substitute_program' => 'nullable|string',
     
             // Foto (opcional, tipo imagen, tamaño máximo 2MB)
-            'photo' => 'nullable|image|max:2048',
+            'photo' => 'nullable|image',
+            'substitute_photo' => 'nullable|image',
         ];
     }
     

@@ -4,7 +4,7 @@
         <v-snackbar
             v-model="snackbar.status"
             :timeout="snackbar.timeout"
-            color="red accent-2"
+            :color="snackbar.color"
             top
             right
         >
@@ -39,13 +39,13 @@
                 <template v-slot:item.actions="{ item }">
                     <v-icon
                         class="mr-2 primario--text"
-                        @click="openEditRoleModal(item)"
+                        @click="openEditFacultyModal(item)"
                     >
                         mdi-pencil
                     </v-icon>
                     <v-icon
                         class="primario--text"
-                        @click="confirmDeleteRole(item)"
+                        @click="confirmDeleteFaculty(item)"
                     >
                         mdi-delete
                     </v-icon>
@@ -111,7 +111,7 @@
             <confirm-dialog
                 :show="deleteFacultyDialog"
                 @canceled-dialog="deleteFacultyDialog = false"
-                @confirmed-dialog="deleteFaculty(deletedRoleId)"
+                @confirmed-dialog="deleteFaculty(deletedFacultyId)"
             >
                 <template v-slot:title>
                     Estas a punto de eliminar la facultad seleccionada
@@ -211,7 +211,8 @@ export default {
             snackbar: {
                 text: '...',
                 status: false,
-                timeout: 1500
+                timeout: 1500,
+                color: 'red accent-2',
             },
             //Dialogs
             createFacultyDialog: false,
@@ -227,14 +228,15 @@ export default {
         this.isLoading = false;
     },
     methods: {
-        openEditRoleModal: function (role) {
-            this.editedFaculty = {...role};
+        openEditFacultyModal: function (faculty) {
+            this.editedFaculty = {...faculty};
             this.editFacultyDialog = true;
         },
         editFaculty: async function () {
             //Verify request
             if (checkIfModelHasEmptyProperties(this.editedFaculty)) {
                 this.snackbar.text = 'Por favor, llena todos los campos del formulario';
+                this.snackbar.color = 'red accent-2';
                 this.snackbar.status = true;
                 return;
             }
@@ -248,6 +250,7 @@ export default {
                 let request = await axios.patch(route('api.faculties.update', {'faculty': this.editedFaculty.id}), data);
                 this.editFacultyDialog = false;
                 this.snackbar.text = request.data.message;
+                this.snackbar.color = 'green darken-1';
                 this.snackbar.status = true;
                 this.getAllFaculties();
 
@@ -256,25 +259,36 @@ export default {
                 console.log(this.editedFaculty);
             } catch (e) {
                 this.snackbar.text = prepareErrorText(e);
+                this.snackbar.color = 'red accent-2';
                 this.snackbar.status = true;
             }
         },
 
-        confirmDeleteRole: function (role) {
-            this.deletedRoleId = role.id;
+        confirmDeleteFaculty: function (faculty) {
+            this.deletedFacultyId = faculty.id;
             this.deleteFacultyDialog = true;
         },
 
         deleteFaculty: async function (facultyId) {
+            if (!facultyId) {
+                this.snackbar.text = 'No se pudo identificar la facultad a eliminar';
+                this.snackbar.color = 'red accent-2';
+                this.snackbar.status = true;
+                return;
+            }
+
             try {
                 let request = await axios.delete(route('api.faculties.destroy', {faculty: facultyId}));
                 this.deleteFacultyDialog = false;
                 this.snackbar.text = request.data.message;
+                this.snackbar.color = 'green darken-1';
                 this.snackbar.status = true;
                 this.getAllFaculties();
+                this.deletedFacultyId = 0;
 
             } catch (e) {
-                this.snackbar.text = e.response.data.message;
+                this.snackbar.text = e.response?.data?.message ?? 'No fue posible eliminar la facultad';
+                this.snackbar.color = 'red accent-2';
                 this.snackbar.status = true;
             }
 
@@ -286,6 +300,7 @@ export default {
         createFaculty: async function () {
             if (checkIfModelHasEmptyProperties(this.newFaculty)) {
                 this.snackbar.text = 'Por favor, llena todos los campos del formulario';
+                this.snackbar.color = 'red accent-2';
                 this.snackbar.status = true;
                 return;
             }
@@ -301,10 +316,12 @@ export default {
                 let request = await axios.post(route('api.faculties.store'), data);
                 this.createFacultyDialog = false;
                 this.snackbar.text = request.data.message;
+                this.snackbar.color = 'green darken-1';
                 this.snackbar.status = true;
                 this.getAllFaculties();
             } catch (e) {
                 this.snackbar.text = e.response.data.message;
+                this.snackbar.color = 'red accent-2';
                 this.snackbar.status = true;
             }
 

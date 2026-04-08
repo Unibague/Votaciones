@@ -24,7 +24,7 @@
                             {{ voter.identification_number }}
                         </v-card-subtitle>
                         <v-card-text>
-                            Facultad de {{ voter.faculty.name }} | Programa de {{ voter.program.name }}
+                            Facultad de {{ facultyName }} | Programa de {{ programName }}
                         </v-card-text>
                         <v-card-actions>
                             <v-btn
@@ -84,11 +84,23 @@ export default {
             voter: {
                 name: 'Esperando datos',
                 identification_number: '...',
-                faculty: '...',
-                program: '...'
+                faculty: null,
+                program: null
             },
             hasData: false,
             identification_number: '',
+        }
+    },
+    computed: {
+        facultyName: function () {
+            return this.voter && this.voter.faculty && this.voter.faculty.name
+                ? this.voter.faculty.name
+                : 'Sin facultad';
+        },
+        programName: function () {
+            return this.voter && this.voter.program && this.voter.program.name
+                ? this.voter.program.name
+                : 'Sin programa';
         }
     },
     methods: {

@@ -1,199 +1,168 @@
 <template>
     <GeneralLayout>
-        <div class="align-center px-6 " style="width: 100%">
-            <h1 class="text-center">Emitiendo voto: {{ voter.name }}</h1>
+        <div class="tarjeton-container px-6">
+
+            <h1 class="text-center tarjeton-title">
+                Emitiendo voto
+            </h1>
+            <p class="text-center tarjeton-subtitle">
+                {{ voter.name }} · Haz clic sobre el tarjetón de tu preferencia
+            </p>
+
             <v-divider class="my-6"></v-divider>
 
-            <div class="fill-height my-4" v-if="isLoading">
+            <!-- LOADING -->
+            <div v-if="isLoading">
                 <v-row>
-                    <v-col cols="4" v-for="(skeleton,key) in 4" :key="key">
+                    <v-col cols="3" v-for="key in 4" :key="key">
                         <v-skeleton-loader type="card"></v-skeleton-loader>
                     </v-col>
                 </v-row>
             </div>
-            <template v-for="(votingOption,key) in votingOptions" v-if="!isLoading">
-                <h2 class="mb-6 text-center">{{ votingOption.name }}</h2>
-                <v-row>
-                    <v-col cols="3" v-for="candidate in votingOption.candidates" :key="candidate.name">
-                        <vue-glow color="#1e3a62" mode="hex" elevation="20"
-                                  :intensity="votingOption.selectedCandidateId === candidate.id ? 2.5:0">
-                            <v-card outlined>
 
-                                <v-card-text class="d-flex justify-space-around align-center">
-                                    <!-- Foto candidato principal -->
-                                    <div class="text-center">
-                                        <template v-if="candidate.principal_photo && candidate.principal_photo.path">
+            <!-- OPCIONES -->
+            <template v-for="(votingOption, key) in votingOptions" v-if="!isLoading">
+                <h2 class="text-center tarjeton-section">
+                    {{ votingOption.name }}
+                </h2>
+
+                <v-row>
+                    <!-- CANDIDATOS -->
+                    <v-col cols="3" v-for="candidate in votingOption.candidates" :key="candidate.id">
+                        <vue-glow
+                            color="#1e3a62"
+                            :intensity="votingOption.selectedCandidateId === candidate.id ? 2.5 : 0"
+                        >
+                            <v-card
+                                outlined
+                                class="tarjeton-card"
+                                :class="{ selected: votingOption.selectedCandidateId === candidate.id }"
+                                @click="selectCandidate(votingOption, candidate.id)"
+                            >
+
+                                <!-- PRINCIPAL -->
+                                <div class="tarjeton-photo">
+                                    <template v-if="candidate.principal_photo && candidate.principal_photo.path">
+
+                                        <v-img
+                                            :src="`/storage/${candidate.principal_photo.path}`"
+                                            max-width="200"
+                                            max-height="200"
+                                            contain
+                                            class="rounded"
+                                        />
+                                    </template>
+                                    <template v-else>
+                                        <v-avatar size="200">
+                                            <v-icon size="180">mdi-account-circle</v-icon>
+                                        </v-avatar>
+                                    </template>
+                                </div>
+
+                                <div class="tarjeton-name">
+                                    {{ candidate.principal_name }}
+                                </div>
+
+                                <div class="tarjeton-meta">
+                                    {{ candidate.principal_faculty }} · {{ candidate.principal_program }}
+                                </div>
+
+                                <!-- SUPLENTE -->
+                                <template v-if="candidate.substitute_name || (candidate.substitute_photo && candidate.substitute_photo.path)">
+
+                                    <v-divider class="my-3"></v-divider>
+
+                                    <div class="tarjeton-photo small">
+                                        <template v-if="candidate.substitute_photo && candidate.substitute_photo.path">
+
                                             <v-img
-                                                :src="`/storage/${candidate.principal_photo.path}`"
-                                                alt="Foto principal"
-                                                max-width="225"
-                                                max-height="225"
-                                                class="mb-2 rounded"
+                                                :src="`/storage/${candidate.substitute_photo.path}`"
+                                                max-width="150"
+                                                max-height="150"
                                                 contain
-                                                @error="() => console.log('Error al cargar imagen principal')"
+                                                class="rounded"
                                             />
                                         </template>
                                         <template v-else>
-                                            <v-avatar size="225" class="mb-2">
-                                                <v-icon class="display-4" large>mdi-account-circle</v-icon>
+                                            <v-avatar size="150">
+                                                <v-icon size="130">mdi-account-circle</v-icon>
                                             </v-avatar>
                                         </template>
                                     </div>
-                                </v-card-text>
 
-                                <v-card-title>
-                                  <span class="text-truncate">
-                                    {{ candidate.principal_name }}
-                                  </span>
-                                </v-card-title>
+                                    <div class="tarjeton-name small">
+                                        {{ candidate.substitute_name }}
+                                    </div>
 
-                                <v-card-subtitle>
-                                    Facultad {{ candidate.principal_faculty }} | Programa {{
-                                        candidate.principal_program
-                                    }}
-                                </v-card-subtitle>
-
-                                <!-- Candidato suplente: Solo mostrar si hay información -->
-                                <template
-                                    v-if="candidate.substitute_name || (candidate.substitute_photo && candidate.substitute_photo.path)">
-                                    <!-- Foto candidato suplente -->
-                                    <v-card-text class="d-flex justify-space-around align-center">
-                                        <div class="text-center">
-                                            <template
-                                                v-if="candidate.substitute_photo && candidate.substitute_photo.path">
-                                                <v-img
-                                                    :src="`/storage/${candidate.substitute_photo.path}`"
-                                                    alt="Foto suplente"
-                                                    max-width="225"
-                                                    max-height="225"
-                                                    class="mb-2 rounded"
-                                                    contain
-                                                    @error="() => console.log('Error al cargar imagen suplente')"
-                                                />
-                                            </template>
-                                            <template v-else>
-                                                <v-avatar size="225" class="mb-2">
-                                                    <v-icon class="display-4" large>mdi-account-circle</v-icon>
-                                                </v-avatar>
-                                            </template>
-                                        </div>
-                                    </v-card-text>
-
-                                    <v-card-title style="padding-top: 0">
-        <span class="text-truncate">
-            {{ candidate.substitute_name }}
-        </span>
-                                    </v-card-title>
-
-                                    <v-card-subtitle>
-                                        Facultad {{ candidate.substitute_faculty }} | Programa
-                                        {{ candidate.substitute_program }}
-                                    </v-card-subtitle>
+                                    <div class="tarjeton-meta">
+                                        {{ candidate.substitute_faculty }} · {{ candidate.substitute_program }}
+                                    </div>
                                 </template>
 
-                                <v-card-actions class="d-flex justify-center mb-2">
-                                    <v-btn
-                                        @click="selectCandidate(votingOption,candidate.id)"
-                                        rounded
-                                        color="primario"
-                                        class="grey--text text--lighten-4"
-                                        :disabled="votingOption.selectedCandidateId === candidate.id"
-                                    >
-                                            <span class="px-2">
-                                                {{
-                                                    votingOption.selectedCandidateId === candidate.id ? 'Seleccionado' : 'Seleccionar'
-                                                }}
-                                            </span>
-                                    </v-btn>
-                                </v-card-actions>
+                                <!-- CHECK -->
+                                <div class="tarjeton-check">
+                                    <v-icon v-if="votingOption.selectedCandidateId === candidate.id">
+                                        mdi-check-circle
+                                    </v-icon>
+                                    <span>
+                                        {{ votingOption.selectedCandidateId === candidate.id ? 'Seleccionado' : '' }}
+                                    </span>
+                                </div>
+
                             </v-card>
                         </vue-glow>
                     </v-col>
 
+                    <!-- VOTO EN BLANCO -->
                     <v-col cols="3">
-                        <vue-glow color="#1e3a62" mode="hex" elevation="20"
-                                  :intensity="votingOption.selectedCandidateId === 0? 2.5:0">
-                            <v-card outlined>
-                                <v-card-title>
-                                <span class="text-truncate">
-                                   Voto en blanco
-                                </span>
-                                </v-card-title>
-                                <v-card-subtitle>
-                                    Selecciona para votar en blanco
-                                </v-card-subtitle>
-                                <v-card-title style="padding-top: 0" class="transparent--text">
-                                    ⠀
-                                </v-card-title>
-                                <v-card-subtitle class="transparent--text">
-                                    ⠀
-                                </v-card-subtitle>
-                                <v-card-actions class="d-flex justify-center mb-2">
-                                    <v-btn
-                                        @click="selectCandidate(votingOption,0)"
-                                        rounded
-                                        color="primario"
-                                        class="grey--text text--lighten-4"
-                                        :disabled="votingOption.selectedCandidateId  === 0"
-                                    >
-                                            <span class="px-2">
-                                                {{
-                                                    votingOption.selectedCandidateId === 0 ? 'Seleccionado' : 'Seleccionar'
-                                                }}
-                                            </span>
-                                    </v-btn>
-                                </v-card-actions>
+                        <vue-glow
+                            color="#1e3a62"
+                            :intensity="votingOption.selectedCandidateId === 0 ? 2.5 : 0"
+                        >
+                            <v-card
+                                outlined
+                                class="tarjeton-card blank"
+                                :class="{ selected: votingOption.selectedCandidateId === 0 }"
+                                @click="selectCandidate(votingOption, 0)"
+                            >
+                                <div class="tarjeton-name">
+                                    Voto en blanco
+                                </div>
+
+                                <div class="tarjeton-meta">
+                                    No seleccionar ningún candidato
+                                </div>
+
+                                <div class="tarjeton-check">
+                                    <v-icon v-if="votingOption.selectedCandidateId === 0">
+                                        mdi-check-circle
+                                    </v-icon>
+                                    <span>
+                                        {{ votingOption.selectedCandidateId === 0 ? 'Seleccionado' : '' }}
+                                    </span>
+                                </div>
                             </v-card>
                         </vue-glow>
                     </v-col>
                 </v-row>
-                <v-divider class="my-8" v-if="key !== (votingOptions.length-1)"></v-divider>
+
+                <v-divider class="my-10" v-if="key !== votingOptions.length - 1"></v-divider>
             </template>
 
+            <!-- BOTÓN FINAL -->
             <div class="d-flex justify-center mt-12" v-if="!isLoading">
                 <v-btn
                     @click="vote"
                     :disabled="isVoting"
                     color="primario"
                     large
-                    class="grey--text text--lighten-4">
+                    class="emitir-voto-btn"
+                >
                     Emitir voto
                 </v-btn>
             </div>
         </div>
-
-        <!-- SNACKBAR-->
-        <v-snackbar
-            v-model="snackbar.status"
-            :timeout="snackbar.timeout"
-            color="red accent-2"
-            top
-            right
-        >
-            {{ snackbar.text }}
-        </v-snackbar>
-        <!-- dialogs-->
-
-        <v-dialog v-model="showDialog" width="500" persistent>
-            <v-card>
-                <v-card-title>
-                    ¡Gracias por votar!
-                </v-card-title>
-                <v-card-text>
-                    Tu voto ha sido registrado exitosamente
-                </v-card-text>
-                <v-card-actions class="d-flex justify-end">
-                    <v-btn
-                        @click="closeTab()"
-                        color="primario"
-                        class="grey--text text--lighten-4">
-                        Finalizar
-                    </v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
     </GeneralLayout>
-
 </template>
 
 
@@ -303,3 +272,115 @@ export default {
     }
 }
 </script>
+ 
+<style>
+.tarjeton-container {
+    width: 100%;
+}
+
+.tarjeton-title {
+    font-weight: 700;
+    color: #1e3a62;
+}
+
+.tarjeton-subtitle {
+    color: #6b7280;
+    font-size: 1rem;
+}
+
+.tarjeton-section {
+    font-weight: 600;
+    margin-bottom: 2rem;
+    color: #1e3a62;
+}
+
+.tarjeton-card {
+    cursor: pointer;
+    border-radius: 16px;
+    padding: 18px;
+    text-align: center;
+    transition: all 0.25s ease;
+    min-height: 520px;
+}
+
+.tarjeton-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 30px rgba(30, 58, 98, 0.25);
+}
+
+.tarjeton-card.selected {
+    border: 2px solid #1e3a62;
+    background-color: #eef3fb;
+}
+
+.tarjeton-photo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.tarjeton-photo.small {
+    margin-top: 10px;
+}
+
+.tarjeton-name {
+    font-weight: 600;
+    font-size: 1.05rem;
+    margin-top: 6px;
+}
+
+.tarjeton-name.small {
+    font-size: 0.95rem;
+}
+
+.tarjeton-meta {
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.tarjeton-check {
+    margin-top: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9rem;
+    color: #1e3a62;
+}
+
+.blank {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 520px;
+}
+
+.emitir-voto-btn {
+    font-weight: 600;
+    padding: 14px 48px;
+    border-radius: 10px;
+    font-size: 1rem;
+
+    background: linear-gradient(
+        135deg,
+        #1e3a62,
+        #274b8a
+    );
+
+    color: #ffffff !important;
+    box-shadow: 0 10px 20px rgba(30, 58, 98, 0.35);
+    transition: all 0.25s ease;
+}
+
+.emitir-voto-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 28px rgba(30, 58, 98, 0.45);
+}
+
+.emitir-voto-btn:disabled {
+    opacity: 0.6;
+    box-shadow: none;
+}
+
+
+</style>
