@@ -50,10 +50,11 @@ class VoteController extends Controller
     /**
      * Store the vote.
      */
-    public function store(StoreVoteRequest $request): JsonResponse
+public function store(StoreVoteRequest $request): JsonResponse
 {
     // Retrieve the voter and their existing votes
     $voter = Voter::with('votes')->findOrFail($request->input('userVotes')[0]['voter_id']);
+    $tableId = optional(auth()->user()->table)->id;
 
     // Prevent double voting
     if ($voter->hasVoted()) {
@@ -70,7 +71,7 @@ class VoteController extends Controller
             'voting_option_id' => $userVote['voting_option_id'],
             'candidate_id' => $userVote['candidate_id'] === 0 ? null : $userVote['candidate_id'],
             'user_id' => auth()->user()->id,
-            'table_id' => auth()->user()->table->id,
+            'table_id' => $tableId,
             'certificate_token' => $token,
         ]);
     }

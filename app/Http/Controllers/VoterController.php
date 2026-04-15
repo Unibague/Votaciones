@@ -45,7 +45,19 @@ class VoterController extends Controller
             return response()->json(['message' => 'Votante no encontrado'], 404);
         }
 
-        $table = auth()->user()->table;
+        $authenticatedUser = auth()->user();
+
+        if ($authenticatedUser->hasRole('admin')) {
+            $voter = $voters->first();
+
+            if ($voter->hasVoted()) {
+                return response()->json(['message' => 'El usuario ya ha votado'], 403);
+            }
+
+            return $voter;
+        }
+
+        $table = $authenticatedUser->table;
 
         if (!$table) {
             return response()->json(['message' => 'El jurado no tiene una mesa asignada.'], 403);
