@@ -141,6 +141,7 @@ export default {
 
         loadingMessage: '',
         selectedFile: null,
+        maxUploadSizeBytes: 10 * 1024 * 1024,
 
         isLogged: false,
         isLoading: false,
@@ -159,10 +160,23 @@ export default {
         },
 
         async onFileChanged(e) {
-            console.log(e, "info obtenida");
             if (e === null){
+                this.selectedFile = null;
                 return;
             }
+
+            if (e.size > this.maxUploadSizeBytes) {
+                this.selectedFile = null;
+                this.$refs.inputFile.reset();
+                showSnackbar(
+                    this.snackbar,
+                    'El archivo supera el tamano permitido de 10 MB. Reduce el archivo o aumenta el limite en produccion.',
+                    'alert',
+                    12000
+                );
+                return;
+            }
+
             this.selectedFile = e;
         },
 
@@ -185,12 +199,22 @@ export default {
                     }
 
                 } catch (e) {
-                    showSnackbar(this.snackbar, e.response.data.message, 'alert', 12000);
+                    showSnackbar(this.snackbar, this.getUploadErrorMessage(e), 'alert', 12000);
                 }
                 this.$refs.inputFile.reset();
+                this.selectedFile = null;
                 this.loadingMessage = "";
                 this.isLoading = false;
             }
+        },
+
+        getUploadErrorMessage(error) {
+            if (error?.response?.status === 413) {
+                return 'Produccion rechazo el archivo por tamano. Ajusta el limite del servidor (Nginx/Apache/PHP) o sube un archivo menor a 10 MB.';
+            }
+
+            return error?.response?.data?.message
+                ?? 'No se pudo cargar el archivo de votantes.';
         }
     }
 }
