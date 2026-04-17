@@ -475,16 +475,16 @@ export default {
             this.editedCandidate = {...candidate};
             this.editCandidateDialog = true;
 
-            if (candidate.principal_photo && candidate.principal_photo.path) {
-                this.previewPhotoEdit = `/storage/${candidate.principal_photo.path}`;
+            if (candidate.principal_photo && candidate.principal_photo.url) {
+                this.previewPhotoEdit = candidate.principal_photo.url;
                 this.editedCandidate.photo = null;
             } else {
                 this.previewPhotoEdit = null;
             }
 
 
-            if (candidate.substitute_photo && candidate.substitute_photo.path) {
-                this.previewPhotoEditSub = `/storage/${candidate.substitute_photo.path}`;
+            if (candidate.substitute_photo && candidate.substitute_photo.url) {
+                this.previewPhotoEditSub = candidate.substitute_photo.url;
                 this.editedCandidate.substitute_photo = null;
             } else {
                 this.previewPhotoEditSub = null;

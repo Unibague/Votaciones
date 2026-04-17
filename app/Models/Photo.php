@@ -11,10 +11,20 @@ class Photo extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
+    protected $appends = ['url'];
 
     public function candidate()
     {
         return $this->belongsTo(Candidate::class);
+    }
+
+    public function getUrlAttribute()
+    {
+        if (!$this->path || !Storage::disk('public')->exists($this->path)) {
+            return null;
+        }
+
+        return Storage::disk('public')->url($this->path);
     }
 
     protected static function booted()

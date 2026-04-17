@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -83,13 +84,31 @@ public function store(StoreVoteRequest $request): JsonResponse
 
     $binaryPdf = $pdf->output();
 
+    $mailSent = false;
+    $mailMessage = 'No hay correo registrado para este votante.';
+
     if ($voter->email) {
-        Mail::to($voter->email)->send(
-            (new VoteCertificateMail($voter->name))
-                ->attachData($binaryPdf, 'certificado.pdf')
-        );
+        try {
+            Mail::to($voter->email)->send(
+                (new VoteCertificateMail($voter->name))
+                    ->attachData($binaryPdf, 'certificado.pdf')
+            );
+            $mailSent = true;
+            $mailMessage = 'El comprobante fue enviado al correo registrado.';
+        } catch (\Throwable $exception) {
+            Log::error('Failed to send vote certificate email.', [
+                'voter_id' => $voter->id,
+                'email' => $voter->email,
+                'message' => $exception->getMessage(),
+            ]);
+            $mailMessage = 'El voto fue registrado, pero no fue posible enviar el comprobante al correo.';
+        }
     }
 
-    return response()->json(['message' => 'Voto registrado exitosamente.']);
+    return response()->json([
+        'message' => 'Voto registrado exitosamente.',
+        'mail_sent' => $mailSent,
+        'mail_message' => $mailMessage,
+    ]);
 }
 }

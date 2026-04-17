@@ -187,11 +187,7 @@ Route::get('/certificate/{token}', [\App\Http\Controllers\VoteCertificateControl
     Route::get('/test-email', function () {
         $vote = Vote::latest()->first();
         $name = $vote->voter->name;
-        $token = $vote->certificate_token;
-        $certificateUrl = route('votes.certificate', ['token' => $token]);
-        $qr = 'data:image/png;base64,' . base64_encode(QrCode::format('png')->size(200)->generate($certificateUrl));
-
-        Mail::to('practicantes.g3@unibague.edu.co')->send(new VoteCertificateMail($name, $certificateUrl, $qr));
+        Mail::to('practicantes.g3@unibague.edu.co')->send(new VoteCertificateMail($name));
 
         return 'Correo enviado con éxito ';
     });
